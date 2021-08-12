@@ -14,12 +14,14 @@ const Main = createNativeStackNavigator()
 export const MainNavigator = () => {
 
     const isAuth = useSelector((state: Istate) => state.auth)
-    const { Navigator: N, Screen: S } = Main
+    const { Navigator, Screen } = Main
 
     return (
-        <N>
-            { !isAuth ? <AuthNavigator/> : <BottomTabNavigator/> }
-        </N>
+        <Navigator>
+            <Screen options={{
+                headerShown: false
+            }} name="main" component={ !isAuth ? AuthNavigator : BottomTabNavigator } /> 
+        </Navigator>
     )
 
 }

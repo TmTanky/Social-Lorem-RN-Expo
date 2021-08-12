@@ -3,6 +3,7 @@ import { useFonts } from 'expo-font'
 import AppLoading from 'expo-app-loading';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/lib/integration/react';
+import { NavigationContainer } from '@react-navigation/native';
 
 // Main Navigator
 import { MainNavigator } from './navigation';
@@ -27,7 +28,9 @@ const App = () => {
   return (
     <Provider store={store} >
       <PersistGate persistor={persistor}>
-        <MainNavigator/>
+        <NavigationContainer>
+          <MainNavigator/>
+        </NavigationContainer>
       </PersistGate>
     </Provider>
   )

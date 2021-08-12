@@ -6,12 +6,12 @@ const Auth = createNativeStackNavigator()
 
 export const AuthNavigator = () => {
 
-    const { Navigator: N, Screen: S } = Auth
+    const { Navigator, Screen } = Auth
 
     return (
-        <N>
-            <S name="login-register" component={AuthScreen} />
-        </N>
+        <Navigator>
+            <Screen name="login-register" component={AuthScreen} />
+        </Navigator>
     )
 
 }
