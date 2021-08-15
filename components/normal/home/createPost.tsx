@@ -21,8 +21,7 @@ export const CreatePostComponent: FC<Props> = (props) => {
 
     const create = async () => {
 
-        // dispatch(createPost(token!, postBy!, userInput))
-        console.log(dispatch(createPost(token!, postBy!, userInput)))
+        dispatch(createPost(token!, postBy!, userInput))
         setUserInput("")
 
     }
@@ -46,9 +45,9 @@ const s = StyleSheet.create({
     root: {
         padding: 10,
         marginHorizontal: 10,
-        marginTop: 10,
+        marginVertical: 10,
         borderRadius: 5,
-        elevation: 1,
+        elevation: 3,
         backgroundColor: 'white'
     },
     input: {
@@ -57,7 +56,7 @@ const s = StyleSheet.create({
         fontFamily: 'opsLight'
     },
     createBtn: {
-        backgroundColor: "#67B3C9",
+        backgroundColor: "#3373C4",
         height: 28,
         justifyContent: 'center',
         alignItems: 'center',

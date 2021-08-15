@@ -1,8 +1,9 @@
 import React, { useEffect, useState, FC } from "react";
-import { View, Text, StyleSheet, FlatList } from 'react-native'
+import { View, Text, StyleSheet, FlatList, TextInput } from 'react-native'
 import { useDispatch, useSelector } from "react-redux";
 import { MaterialIcons } from '@expo/vector-icons';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { SearchBar } from "react-native-elements";
 
 // Redux
 import { loadAllPosts } from "../../redux/actions/actions";
@@ -13,6 +14,9 @@ import { Iuser, Istate } from "../../types";
 // Components
 import { CreatePostComponent } from "../../components/normal/home/createPost";
 import { PostItem } from "../../components/reusable/post";
+
+// Screens
+import SearchScreen from "./search";
 
 const HomeScreen: FC = (props) => {
 
@@ -25,17 +29,21 @@ const HomeScreen: FC = (props) => {
     }, [])
 
     return (
-        <View>
+        <View style={{backgroundColor: 'white'}}>
 
             <CreatePostComponent/>
 
-            <FlatList style={{paddingVertical: 20}} data={allPosts} keyExtractor={item => item._id} renderItem={(item) => {
+            <View style={{paddingVertical: 10, backgroundColor: 'white'}}>
 
-                const {item: { _id, postBy, likes, comments, content }} = item
+                <FlatList data={allPosts} keyExtractor={item => item._id} renderItem={(item) => {
 
-                return <PostItem id={_id} postBy={postBy} likes={likes} comments={comments} content={content} />
+                    const {item: { _id, postBy, likes, comments, content }} = item
 
-            }} />
+                    return <PostItem id={_id} postBy={postBy} likes={likes} comments={comments} content={content} />
+
+                }} />
+
+            </View>
 
 
         </View>
@@ -49,60 +57,51 @@ const Home = createNativeStackNavigator()
 
 export const HomeStackNavigator = () => {
 
-    const { Navigator, Screen } = Home 
+    const { Navigator, Screen } = Home
 
     return (
-        <Navigator screenOptions={{
-            headerStyle: {
-                backgroundColor: "#67B3C9"
-            },
-            headerTintColor: 'white',
-            headerTitleStyle: {
-                fontFamily: 'opsBold'
+        <Navigator screenOptions={() => {
+
+            return {
+                headerStyle: {
+                    backgroundColor: 'white'
+                },
+                headerTintColor: '#202020',
+                headerTitleStyle: {
+                    fontFamily: 'opsBold'
+                },
+                animation: "slide_from_right",
+                animationTypeForReplace: 'push'
             }
+
         }} >
-            <Screen name="Home" component={HomeScreen} />
+
+            <Screen name="Home" options={(props) => {
+                return {
+                    headerRight: () => {
+                        return <MaterialIcons name="search" color="black" onPress={() => props.navigation.navigate('Search')} size={25} />
+                    }
+                }
+            }} component={HomeScreen} />
+
+            <Screen name="Search" component={SearchScreen} />
+
         </Navigator>
     )
 
 }
 
-const s = StyleSheet.create({
-    post: {
-        backgroundColor: 'white',
-        marginVertical: 5,
-        marginHorizontal: 10,
-        padding: 10,
-        borderRadius: 3,
-        elevation: 1.5
+{/* <Screen name="Search" options={(props) => {
+
+return {
+    headerRight: () => {
+        return <View style={{ width: '88%', flexDirection: 'row' }}>
+            <TextInput value={userInput} onChangeText={setUserInput} style={{ width: '97%', padding: 5, fontFamily: 'opsSemi', color: 'white' }} placeholderTextColor="#ECECE9" placeholder="Search"/>
+            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                <MaterialIcons name="search" size={25} color="white" />
+            </View>
+        </View>
     },
-    postBy: {
-        marginBottom: 5
-    },
-    stats: {
-        flexDirection: 'row',
-        marginTop: 10
-    },
-    likeStat: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'row',
-        marginRight: 5
-    },
-    commentStat: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'row'
-    },
-    options: {
-        marginTop: 10,
-        flexDirection: 'row',
-        height: 25
-    },
-    option: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'row'
-    }
-})
+    headerTitle: ""
+}
+}} component={SearchScreen} /> */}

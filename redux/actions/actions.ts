@@ -1,9 +1,9 @@
 import axios from "axios"
 import { useSelector } from "react-redux"
-import { createPostGql, deletePostGql } from "../../gql/mutations"
+import { createCommentGql, createPostGql, deletePostGql, editPostGql, reactToPostGql } from "../../gql/mutations"
 
 // GQL
-import { getAllPostsGql, getFollowGql, getUsernameGql, getUsersPostsGql } from "../../gql/queries"
+import { getAllPostsGql, getFollowGql, getUsernameGql, getUsersPostsGql, paginateGql } from "../../gql/queries"
 
 // Helpers
 import { PROD_URL } from "../../helpers/url"
@@ -123,8 +123,6 @@ export const getUsersPosts = (token: string, userID: string) => {
             }
         })
 
-        console.log(data)
-
         dispatch({
             type: LOAD_MY_POSTS,
             payload: data.data.getUsersPosts
@@ -160,49 +158,6 @@ export const deletePost = (token: string, postID: string, userID: string) => {
 
 export const createPost = (token: string, postBy: string, content: string) => {
 
-    // return async (dispatch: thunkDis) => {
-
-    //     await axios.post(PROD_URL, {
-    //         query: createPostGql,
-    //         variables: {
-    //             postBy,
-    //             content
-    //         }
-    //     }, {
-    //         headers: {
-    //             'authorization': `Bearer ${token}`
-    //         }
-    //     })
-
-    //     return () => {
-    //         dispatch(getUsersPosts(token, postBy))
-    //         dispatch(loadAllPosts(token))
-    //     }
-
-    //     try {
-
-    //         await axios.post(PROD_URL, {
-    //             query: createPostGql,
-    //             variables: {
-    //                 postBy,
-    //                 content
-    //             }
-    //         }, {
-    //             headers: {
-    //                 'authorization': `Bearer ${token}`
-    //             }
-    //         })
-
-    //         dispatch(getUsersPosts(token, postBy))
-    //         dispatch(loadAllPosts(token))
-    //         return 'Done'
-            
-    //     } catch (error) {
-    //         return 'Failed'
-    //     }
-
-    // }
-
     return async (dispatch: thunkDis) => {
 
         return new Promise((resolve, reject) => {
@@ -229,5 +184,105 @@ export const createPost = (token: string, postBy: string, content: string) => {
 
     }
 
+}
+
+export const paginate = (token: string, userID: string, limitCount: number, skipCount: number) => {
+
+    return async (dispatch: thunkDis) => {
+
+        return new Promise (async(resolve, reject): Promise<any> => {
+
+            await axios.post(PROD_URL, {
+                query: paginateGql,
+                variables: {
+                    userID,
+                    limitCount,
+                    skipCount
+                }
+            }, {
+                headers: {
+                    'authorization': `Bearer ${token}`
+                }
+            }).then(res => {
+                dispatch({
+                    type: LOAD_MY_POSTS,
+                    payload: res.data.data.paginate
+                })
+                resolve(true)
+            }).catch(err => {
+                reject()
+            })
+
+        })
+
+    }
+
+}
+
+export const reactToPost = (postID: string, userID: string, token: string) => {
+
+    return async (dispatch: thunkDis) => {
+
+        const {data} = await axios.post(PROD_URL, {
+            query: reactToPostGql,
+            variables: {
+                postID,
+                userID
+            }
+        }, {
+            headers: {
+                'authorization': `Bearer ${token}`
+            }
+        })
+
+        // console.log(data)
+        dispatch(getUsersPosts(token, userID))
+
+    }
+
+}
+
+export const createComment = (postID: string, content: string, userID: string, token: string) => {
+
+    return async (dispatch: thunkDis) => {
+
+        const {data} = await axios.post(PROD_URL, {
+            query: createCommentGql,
+            variables: {
+                postID,
+                content,
+                userID
+            }
+        }, {
+            headers: {
+                'authorization': `Bearer ${token}`
+            }
+        })
+
+        dispatch(getUsersPosts(token, userID))
+
+    }
+
+}
+
+export const editPost = (postID: string, content: string, token: string, userID: string) => {
+    
+    return async (dispatch: thunkDis) => {
+
+        await axios.post(PROD_URL, {
+            query: editPostGql,
+            variables: {
+                postID,
+                content
+            }
+        }, {
+            headers: {
+                'authorization': `Bearer ${token}`
+            }
+        })
+
+        dispatch(getUsersPosts(token, userID))
+
+    }
 
 }
