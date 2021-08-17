@@ -1,6 +1,6 @@
 import axios from "axios"
 import { useSelector } from "react-redux"
-import { createCommentGql, createPostGql, deletePostGql, editPostGql, reactToPostGql } from "../../gql/mutations"
+import { changePasswordGql, changeUsernameGql, createCommentGql, createPostGql, deletePostGql, editPostGql, reactToPostGql } from "../../gql/mutations"
 
 // GQL
 import { getAllPostsGql, getFollowGql, getUsernameGql, getUsersPostsGql, paginateGql } from "../../gql/queries"
@@ -12,13 +12,23 @@ import { PROD_URL } from "../../helpers/url"
 import { Istate, Iuser, thunkDis } from "../../types"
 
 // Action Types
-import { AUTH, CREATE_POST, DELETE_POST, LOAD_ALL_POSTS, LOAD_MY_FOLLOW, LOAD_MY_NAMES, LOAD_MY_POSTS, LOGIN_USER, UN_AUTH } from "../actionTypes/types"
+import { AUTH, CREATE_POST, DELETE_POST, LOAD_ALL_POSTS, LOAD_MY_FOLLOW, LOAD_MY_NAMES, LOAD_MY_POSTS, LOGIN_USER, LOGOUT_USER, UN_AUTH } from "../actionTypes/types"
 
 export const loginUser = (data: Iuser) => {
+
+    console.log(data)
 
     return {
         type: LOGIN_USER,
         payload: data
+    }
+
+}
+
+export const logoutUser = () => {
+
+    return {
+        type: LOGOUT_USER
     }
 
 }
@@ -35,6 +45,17 @@ export const unAuthUser = () => {
 
     return {
         type: UN_AUTH
+    }
+
+}
+
+export const logoutAll = () => {
+
+    return async (dispatch: thunkDis) => {
+
+        dispatch(logoutUser())
+        dispatch(unAuthUser())
+
     }
 
 }
@@ -282,6 +303,48 @@ export const editPost = (postID: string, content: string, token: string, userID:
         })
 
         dispatch(getUsersPosts(token, userID))
+
+    }
+
+}
+
+export const changeUsername = (userID: string, username: string, token: string) => {
+
+    return async (dispatch: thunkDis) => {
+
+        await axios.post(PROD_URL, {
+            query: changeUsernameGql,
+            variables: {
+                userID,
+                newUsername: username
+            }
+        }, {
+            headers: {
+                'authorization': `Bearer ${token}`
+            }
+        })
+
+        dispatch(getUsername(token, userID))
+
+    }
+
+}
+
+export const changePassword = (userID: string, newPass: string, token: string) => {
+
+    return async (dispatch: thunkDis) => {
+
+        const {data} = await axios.post(PROD_URL, {
+            query: changePasswordGql,
+            variables: {
+                userID,
+                newPass
+            }
+        }, {
+            headers: {
+                'authorization': `Bearer ${token}`
+            }
+        })
 
     }
 

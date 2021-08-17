@@ -34,7 +34,6 @@ const SearchScreen: FC = (props: any) => {
             }
         })
 
-        // console.log(data.data.data.getUserByUsername)
         setUserList(data.data.data.getUserByUsername)
         setIsSearching(false)
 
@@ -43,7 +42,7 @@ const SearchScreen: FC = (props: any) => {
     useEffect(() => {
 
         userInput && setIsSearching(true)
-        setUserList([])
+        const setting = setUserList([])
 
         const delaySearch = setTimeout(() => {
             submitSearch()
@@ -51,6 +50,7 @@ const SearchScreen: FC = (props: any) => {
 
         return () => {
             clearTimeout(delaySearch)
+            setting
         }
     }, [userInput])
 
@@ -59,7 +59,7 @@ const SearchScreen: FC = (props: any) => {
 
             <View style={{flexDirection: 'row', height: 60, paddingHorizontal: 10}}>
                 <View style={{width: '90%', justifyContent: 'center', padding: 10}}>
-                    <TextInput value={userInput} onChangeText={setUserInput} autoFocus={false} placeholder="Search something." returnKeyType="done" style={{fontFamily: 'opsSemi', fontSize: 15}} />
+                    <TextInput value={userInput} onChangeText={setUserInput} autoFocus={false} placeholder="Search something." returnKeyType="done" style={{fontFamily: 'opsReg', fontSize: 15}} />
                 </View>
                 <View style={{width: '10%', justifyContent: 'center', alignItems: 'center'}}>
                     { userInput ? <MaterialIcons onPress={() => {
@@ -83,15 +83,15 @@ const SearchScreen: FC = (props: any) => {
                         <TouchableHighlight onPress={() => {
                             console.log(item.username)
                         }} underlayColor="transparent" key={item._id}>
-                            <View style={{paddingHorizontal: 10, paddingVertical: 8, borderRadius: 5, elevation: 0.5, backgroundColor: 'white'}} >
+                            <View style={{paddingHorizontal: 10, paddingVertical: 8, backgroundColor: 'white'}} >
                                 <Text style={{fontFamily: 'opsSemi', fontSize: 18}}> {item.firstName} {item.lastName} </Text>
-                                <Text style={{fontFamily: 'opsLight'}}> @{item.username} </Text>
+                                <Text style={{fontFamily: 'opsLight', fontSize: 13}}> @{item.username} </Text>
                             </View>
                         </TouchableHighlight>
                     )
                 }) }
             </View>
-            
+
         </View>
     )
 

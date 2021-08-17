@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useSelector, useDispatch } from "react-redux";
 import { BottomSheet } from "react-native-elements";
 import { Overlay } from "react-native-elements";
+import { Ionicons } from "@expo/vector-icons";
 
 // Types
 import { Ipost, Istate } from "../../types";
@@ -14,6 +15,9 @@ import { getFollow, getUsername, getUsersPosts, deletePost, loadAllPosts, pagina
 // Helpers
 import { optionsBtns } from "../../helpers/bottomSheetOptions";
 import { PROD_URL } from "../../helpers/url";
+
+// Screens
+import { SettingsNavigator } from "../settings/settings";
 
 // Components
 import { PostItem } from "../../components/reusable/post";
@@ -72,6 +76,21 @@ const MyProfileScreen: FC = (props) => {
 
     }
 
+    const iconHandler = (mode: string) => {
+
+        switch (mode) {
+            case 'Edit':
+                return <Ionicons name="pencil-outline" size={22} />
+            case 'Remove':
+                return <Ionicons name="trash-outline" size={22} />
+            case 'Cancel':
+                return <Ionicons name="close-outline" size={22} />
+            default:
+                return null
+        }
+
+    }
+
     useEffect(() => {
         setRefreshing(true)
         dispatch(getUsername(token!, userID!))
@@ -91,12 +110,14 @@ const MyProfileScreen: FC = (props) => {
     }, [limitCount])
 
     return (
-        <View style={{paddingBottom: 10, backgroundColor: 'white'}}>
+        <View style={s.root}>
 
             <FlatList style={{
-                backgroundColor: 'white'
+                backgroundColor: 'white',
+                flex: 1
             }} ListHeaderComponent={
                 <View style={{paddingVertical: 15}}>
+
                     <View style={s.profileRoot}>
 
                         <View style={{paddingVertical: 10}}>
@@ -112,6 +133,11 @@ const MyProfileScreen: FC = (props) => {
                     </View>
 
                     <CreatePostComponent token={token} postBy={userID} />
+
+                    { myPosts.length === 0 ? <View style={{marginTop: 20, justifyContent: 'center', alignItems: 'center'}}>
+                        <Text style={{fontFamily: 'opsSemi', color: 'gray'}}> No Posts Available </Text>
+                    </View> : null }
+
                 </View>
             } data={myPosts} keyExtractor={item => item._id} renderItem={(item) => {
 
@@ -119,12 +145,9 @@ const MyProfileScreen: FC = (props) => {
 
                 return <PostItem setDelete={setToBeDeleted} toggleOptions={setIsOpen} id={_id} postBy={postBy} likes={likes} comments={comments} content={content} />
 
-            }} refreshing={refreshing} onRefresh={() => {
-                // setRefreshing(true)
-                // getData()
+            }} refreshing={refreshing} indicatorStyle="black" onRefresh={() => {
                 setLimitCount(5)
             }} onEndReached={() => {
-                // setRefreshing(true)
                 setLimitCount(prev => prev+=5)
             }} onEndReachedThreshold={0.1} />
 
@@ -136,14 +159,19 @@ const MyProfileScreen: FC = (props) => {
                         <TouchableHighlight key={item.id} onPress={() => {
                              handler(item.title, toBeDeleted)
                         }} style={s.optionBtns}>
-                            <Text style={{fontFamily: 'opsReg'}}> {item.title} </Text>
+                            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                { iconHandler(item.title) }
+                                <Text style={{fontFamily: 'opsReg', marginLeft: 8}}> {item.title} </Text>
+                            </View>
                         </TouchableHighlight>
                     )
                 }) }
             </BottomSheet>
 
             <Overlay animationType="fade" statusBarTranslucent={true} overlayStyle={{
-                width: '90%'
+                width: '90%',
+                backgroundColor: 'white',
+                paddingVertical: 20
             }} isVisible={showEditPost} >
                 <EditPostComponent selectedID={toBeEdited} myPosts={myPosts} onClose={setShowEditPost}/>
             </Overlay>
@@ -164,7 +192,21 @@ export const MyProfileStackNavigator = () => {
     return (
         <Navigator screenOptions={options}>
 
-            <Screen name="My Profile" component={MyProfileScreen} />
+            <Screen name="MyProfile" options={(props) => {
+                return {
+                    headerTitle: 'My Profile',
+                    headerRight: () => {
+                        return <Ionicons onPress={() => {
+                            props.navigation.navigate('Settings')
+                        }} name="person-circle-outline" size={30} />
+                    },
+                    headerShown: true
+                }
+            }} component={MyProfileScreen} />
+
+            <Screen name="Settings" options={{
+                animation: "slide_from_right"
+            }} component={SettingsNavigator} />
 
         </Navigator>
     )
@@ -172,13 +214,18 @@ export const MyProfileStackNavigator = () => {
 }
 
 const s = StyleSheet.create({
+    root: {
+        paddingBottom: 10,
+        backgroundColor: 'white',
+        flex: 1
+    },
     profileRoot: {
         backgroundColor: 'white',
         padding: 10,
-        marginHorizontal: 10,
+        marginHorizontal: 5,
         // marginTop: 10,
-        borderRadius: 5,
-        elevation: 5,
+        // borderRadius: 5,
+        // elevation: 5,
     },
     optionBtns: {
         padding: 20,
@@ -194,5 +241,6 @@ const options = {
     headerTintColor: 'black',
     headerTitleStyle: {
         fontFamily: 'opsBold',
-    }
+    },
+    headerShown: false
 }

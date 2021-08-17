@@ -11,26 +11,35 @@ const Register: FC<Props> = ({toggleMode}) => {
     return (
         <KeyboardAvoidingView style={s.root}>
 
-            <View style={s.title}>
-                <Text style={{fontSize: 40, fontFamily: 'opsBold'}} > Sign Up </Text>
+            <View style={s.titleRoot}>
+                <Text style={s.title} > Sign Up </Text>
             </View>
 
-            <Input style={s.inputs} label="First Name" leftIcon={
-                    { type: 'material', color: 'gray', name: 'person-outline'}
-            } placeholder="First Name" />
-            <Input style={s.inputs} label="Last Name" leftIcon={
-                    { type: 'material', color: 'gray', name: 'person-outline'}
-            } placeholder="Last Name" />
-            <Input style={s.inputs} label="Email Address" leftIcon={
-                    { type: 'material', color: 'gray', name: 'mail-outline'}
-            } placeholder="Email Address" />
-            <Input style={s.inputs} secureTextEntry={true} label="Password" leftIcon={
-                { type: 'material', color: 'gray', name: 'vpn-key'}
-            } placeholder="Password" />
+            <Input inputStyle={{
+                fontSize: 15
+            }} labelStyle={{color: "black"}} style={s.inputs} label="First Name" leftIcon={
+                { type: 'ionicon', color: "#3373C4", name: 'person-outline'}
+            } />
+            <Input inputStyle={{
+                fontSize: 15
+            }} labelStyle={{color: "black"}} style={s.inputs} label="Last Name" leftIcon={
+                { type: 'ionicon', color: "#3373C4", name: 'person-outline'}
+            } />
+            <Input inputStyle={{
+                fontSize: 15
+            }} labelStyle={{color: "black"}} style={s.inputs} autoCompleteType="email" label="Email Address" leftIcon={
+                { type: 'ionicon', color: "#3373C4", name: 'mail-outline'}
+            } />
+            <Input inputStyle={{
+                color: "#3373C4",
+                fontSize: 15
+            }} labelStyle={{color: "black"}} style={s.inputs} secureTextEntry={true} label="Password" leftIcon={
+                { type: 'ionicon', color: "#3373C4", name: 'key-outline'}
+            } />
 
-            <Button buttonStyle={s.button} titleStyle={{ fontFamily: 'opsReg',textTransform: "uppercase" }} title="Sign Up" />
+            <Button buttonStyle={s.button} titleStyle={{ fontFamily: 'opsReg' }} title="Sign Up" />
 
-            <Text style={{marginHorizontal: 5, fontFamily: 'opsReg'}} onPress={() => toggleMode('login')} > Already have an account? Sign in now. </Text> 
+            <Text style={{marginHorizontal: 5, fontFamily: 'opsReg'}} onPress={() => toggleMode('login')} > Already have an account?<Text style={{fontFamily: 'opsBolder', color: "#3373C4"}}> Sign in now</Text>. </Text> 
 
         </KeyboardAvoidingView>
     )
@@ -43,19 +52,26 @@ const s = StyleSheet.create({
     root: {
         flex: 1,
         justifyContent: 'center',
-        marginHorizontal: 10
+        marginHorizontal: 10,
+        backgroundColor: 'white'
     },
     inputs: {
         marginHorizontal: 5,
         fontFamily: 'opsReg'
     },
+    titleRoot: {
+        marginBottom: 15,
+    },
     title: {
-        marginBottom: 15
+        fontSize: 40,
+        fontFamily: 'opsBold',
+        color: "#3373C4"
     },
     button: {
-        backgroundColor: 'black',
+        backgroundColor: "#3373C4",
         marginHorizontal: 5,
         marginBottom: 15,
-        height: 50
+        height: 50,
+        borderRadius: 25
     }
 })

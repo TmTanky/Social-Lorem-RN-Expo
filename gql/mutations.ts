@@ -20,3 +20,15 @@ export const createCommentGql = `mutation createComment($postID: ID!, $content: 
 export const editPostGql = `mutation editPost($postID: ID!, $content: String!) {
     editPost(postID: $postID, content: $content) 
 }`
+
+export const editNamesGql = `mutation editUsername($userID: ID!, $firstName: String!, $lastName: String!) {
+    editUsername(userID: $userID, firstName: $firstName, lastName: $lastName)
+}`
+
+export const changeUsernameGql = `mutation changeUsername($userID: ID!, $newUsername: String!) {
+    changeUsername(userID: $userID, newUsername: $newUsername)
+}`
+
+export const changePasswordGql = `mutation changePassword($userID: ID!, $newPass: String!) {
+    changePassword(userID: $userID, newPass: $newPass)
+}`

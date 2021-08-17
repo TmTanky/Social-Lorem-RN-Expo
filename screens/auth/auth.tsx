@@ -13,7 +13,7 @@ const AuthScreen = () => {
     const [mode, setMode] = useState<Mode>('login')
 
     return (
-        <View style={{flex: 1}}>
+        <View style={{flex: 1, backgroundColor: 'white'}}>
             { mode === 'login' ? <Login toggleMode={setMode} /> : <Register toggleMode={setMode} /> }
         </View>
     )

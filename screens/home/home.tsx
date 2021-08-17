@@ -29,13 +29,13 @@ const HomeScreen: FC = (props) => {
     }, [])
 
     return (
-        <View style={{backgroundColor: 'white'}}>
+        <View style={s.mainRoot}>
 
             <CreatePostComponent/>
 
-            <View style={{paddingVertical: 10, backgroundColor: 'white'}}>
+            <View style={s.outerStyle}>
 
-                <FlatList data={allPosts} keyExtractor={item => item._id} renderItem={(item) => {
+                <FlatList style={s.listStyle} data={allPosts} keyExtractor={item => item._id} renderItem={(item) => {
 
                     const {item: { _id, postBy, likes, comments, content }} = item
 
@@ -91,17 +91,18 @@ export const HomeStackNavigator = () => {
 
 }
 
-{/* <Screen name="Search" options={(props) => {
-
-return {
-    headerRight: () => {
-        return <View style={{ width: '88%', flexDirection: 'row' }}>
-            <TextInput value={userInput} onChangeText={setUserInput} style={{ width: '97%', padding: 5, fontFamily: 'opsSemi', color: 'white' }} placeholderTextColor="#ECECE9" placeholder="Search"/>
-            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                <MaterialIcons name="search" size={25} color="white" />
-            </View>
-        </View>
+const s = StyleSheet.create({
+    mainRoot: {
+        backgroundColor: 'white',
+        flex: 1
     },
-    headerTitle: ""
-}
-}} component={SearchScreen} /> */}
+    outerStyle: {
+        paddingVertical: 10,
+        backgroundColor: 'white',
+        flex: 1
+    },
+    listStyle: {
+        backgroundColor: 'white',
+        flex: 1
+    }
+})

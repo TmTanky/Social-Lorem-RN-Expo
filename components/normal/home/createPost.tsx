@@ -46,9 +46,11 @@ const s = StyleSheet.create({
         padding: 10,
         marginHorizontal: 10,
         marginVertical: 10,
-        borderRadius: 5,
-        elevation: 3,
-        backgroundColor: 'white'
+        // borderRadius: 5,
+        // elevation: 3,
+        backgroundColor: 'white',
+        borderBottomColor: 'black',
+        borderBottomWidth: 0.2
     },
     input: {
         // backgroundColor: 'whitesmoke',

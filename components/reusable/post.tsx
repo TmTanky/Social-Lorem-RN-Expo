@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState, SetStateAction, Dispatch } from "react";
 import { Text, View, StyleSheet } from 'react-native'
-import { MaterialIcons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useNavigation, useRoute } from "@react-navigation/core";
 import { useSelector, useDispatch } from "react-redux";
 import { Overlay } from 'react-native-elements'
@@ -31,16 +31,16 @@ export const PostItem: FC<Props> = (props) => {
     const nav = useNavigation()
     const route = useRoute()
     const dispatch = useDispatch()
-
-    const [isHome, setIsHome] = useState<boolean>(true)
-    const [showCreateComment, setShowCreateComment] = useState(false)
     const myPosts = useSelector((state: Istate) => state.myPosts)
     const token = useSelector((state: Istate) => state.user.token)
     const userID = useSelector((state: Istate) => state.user._id)
 
+    const [isHome, setIsHome] = useState<boolean>(true)
+    const [showCreateComment, setShowCreateComment] = useState(false)
+
     useEffect(() => {
         const subcribe = nav.addListener('focus', () => {
-            route.name === "My Profile" ? setIsHome(false) : setIsHome(true)
+            route.name === "MyProfile" ? setIsHome(false) : setIsHome(true)
         })
 
         return subcribe
@@ -50,10 +50,10 @@ export const PostItem: FC<Props> = (props) => {
         <View style={s.post}>
             <View style={s.postBy}>
                 <Text style={{fontFamily: 'opsSemi', fontSize: 18}}> {postBy.firstName} {postBy.lastName} </Text>
-                { !isHome && <MaterialIcons onPress={() => {
+                { !isHome && <Ionicons onPress={() => {
                     setDelete!(id)
                     toggleOptions!(prev => !prev)
-                }} name="more-horiz" size={25} /> }
+                }} name="ellipsis-horizontal-outline" color="black" size={25} /> }
             </View>
 
             <View>
@@ -72,18 +72,20 @@ export const PostItem: FC<Props> = (props) => {
 
             <View style={s.options}>
                 <View style={s.option}>
-                    <MaterialIcons onPress={() => {
+                    <Ionicons onPress={() => {
                         dispatch(reactToPost(id, userID!, token!))
-                    }} name={ likes.map(item => item._id === id).length === 1 ? "thumb-up" : "thumb-up-off-alt" } color="#3373C4" size={20} />
+                    }} name={ likes.map(item => item._id === id).length === 1 ? "heart" : "heart-outline" } color="#3373C4" size={20} />
                 </View>
 
                 <View style={s.option}>
-                    <MaterialIcons onPress={() => setShowCreateComment(prev => !prev)} name="comment" color="#3373C4" size={20} />
+                    <Ionicons onPress={() => setShowCreateComment(prev => !prev)} name="chatbox-ellipses-outline" color="#3373C4" size={20} />
                 </View>
             </View>
 
             <Overlay animationType="fade" statusBarTranslucent={true} overlayStyle={{
-                width: '90%'
+                width: '90%',
+                backgroundColor: 'white',
+                paddingVertical: 20
             }} onRequestClose={() => setShowCreateComment(prev => !prev)} isVisible={showCreateComment} >
                 <CreateCommentComponent postID={id} onClose={setShowCreateComment}/>
             </Overlay>

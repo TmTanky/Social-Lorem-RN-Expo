@@ -25,17 +25,18 @@ export const CreateCommentComponent: FC<Props> = (props) => {
     const [userInput, setUserInput] = useState("")
 
     return (
-        <View>
+        <View style={{backgroundColor: 'white'}}>
             <Text style={{fontFamily: 'opsSemi', marginBottom: 20, fontSize: 20}} > Create a comment </Text>
             <TextInput value={userInput} onChangeText={setUserInput} multiline={true} placeholder="Write something." />
 
-            <TouchableHighlight disabled={!userInput} onPress={() => {
+            <TouchableHighlight disabled={!userInput} activeOpacity={0.2} underlayColor="#3373C4" onPress={() => {
                 dispatch(createComment(postID, userInput, userID!, token!))
                 onClose(prev => !prev)
             }} style={s.btn}>
                 <Text style={{fontFamily: 'opsSemi'}}> Comment </Text>
             </TouchableHighlight>
-            <TouchableHighlight onPress={() => {
+            
+            <TouchableHighlight activeOpacity={0.2} underlayColor="red" onPress={() => {
                 onClose(prev => !prev)
             }} style={s.btn2}>
                 <Text style={{fontFamily: 'opsSemi'}}> Cancel </Text>
@@ -48,15 +49,15 @@ export const CreateCommentComponent: FC<Props> = (props) => {
 const s = StyleSheet.create({
     btn: {
         marginTop: 15,
-        backgroundColor: '#67B3C9',
+        backgroundColor: "#3373C4",
         height: 30,
         justifyContent: 'center',
         alignItems: 'center',
     },
     btn2: {
         marginTop: 5,
-        backgroundColor: 'red',
         height: 30,
+        backgroundColor: 'red',
         justifyContent: 'center',
         alignItems: 'center',
     }

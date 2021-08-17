@@ -24,17 +24,17 @@ export const EditPostComponent: FC<Props> = (props) => {
     const [userInput, setUserInput] = useState(selectedPost?.content)
 
     return (
-        <View>
+        <View style={{backgroundColor: 'white'}}>
             <Text style={{fontFamily: 'opsSemi', marginBottom: 20, fontSize: 20}}> Edit Post </Text>
             <TextInput value={userInput} placeholder="Write something." onChangeText={setUserInput} multiline={true} />
 
-            <TouchableHighlight disabled={!userInput} onPress={() => {
+            <TouchableHighlight disabled={!userInput} activeOpacity={0.2} underlayColor="#3373C4" onPress={() => {
                 dispatch(editPost(selectedID, userInput!, token!, userID!))
                 onClose(prev => !prev)
             }} style={s.btn}>
                 <Text style={{fontFamily: 'opsSemi'}}> Confirm </Text>
             </TouchableHighlight>
-            <TouchableHighlight style={s.btn2} onPress={() => onClose(prev => !prev)}>
+            <TouchableHighlight activeOpacity={0.2} underlayColor="red" style={s.btn2} onPress={() => onClose(prev => !prev)}>
                 <Text style={{fontFamily: 'opsSemi'}}> Cancel </Text>
             </TouchableHighlight>
         </View>
@@ -45,7 +45,7 @@ export const EditPostComponent: FC<Props> = (props) => {
 const s = StyleSheet.create({
     btn: {
         marginTop: 15,
-        backgroundColor: '#67B3C9',
+        backgroundColor: "#3373C4",
         height: 30,
         justifyContent: 'center',
         alignItems: 'center',
