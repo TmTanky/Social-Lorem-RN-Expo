@@ -1,11 +1,14 @@
 import React, { FC, useState } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, useColorScheme } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { Input } from 'react-native-elements'
 import { useSelector, useDispatch } from 'react-redux'
 
 // Redux
 import { changePassword } from '../../../redux/actions/actions'
+
+// Constants
+import { celticB, lightMode, darkMode } from '../../../constants/Colors'
 
 // Types
 import { Istate } from '../../../types'
@@ -15,6 +18,7 @@ export const ChangePasswordScreen = () => {
     const dispatch = useDispatch()
     const userID = useSelector((state: Istate) => state.user._id)!
     const token = useSelector((state: Istate) => state.user.token)!
+    const deviceTheme = useColorScheme()
 
     const [newPass, setNewPass] = useState("")
     const [confirmPass, setConfirmPass] = useState("")
@@ -35,44 +39,40 @@ export const ChangePasswordScreen = () => {
     }
 
     return (
-        <View style={{flex: 1, backgroundColor: 'white'}}>
+        <View style={{flex: 1, backgroundColor: deviceTheme === 'light' ? lightMode : darkMode}}>
             <View style={s.formRoot}>
 
                 <Input label="New Password" labelStyle={{
                     fontFamily: 'opsLight',
                     fontSize: 15,
-                    color: "#3373C4"
+                    color: celticB
                 }} inputStyle={{
-                    fontSize: 15
+                    fontSize: 15,
+                    color: deviceTheme === 'light' ? darkMode : lightMode
                 }} leftIcon={{
                     type: 'ionicon',
                     name: "key-outline",
-                    color: "#3373C4"
-                }} value={newPass} onChangeText={setNewPass} />
+                    color: celticB
+                }} secureTextEntry={true} value={newPass} onChangeText={setNewPass} />
 
                 <Input label="Confirm Password" labelStyle={{
                     fontFamily: 'opsLight',
                     fontSize: 15,
-                    color: "#3373C4"
+                    color: celticB
                 }} inputStyle={{
-                    fontSize: 15
+                    fontSize: 15,
+                    color: deviceTheme === 'light' ? darkMode : lightMode
                 }} leftIcon={{
                     type: 'ionicon',
                     name: "key",
-                    color: "#3373C4"
-                }} value={confirmPass} onChangeText={setConfirmPass} errorMessage={ isNotSame ? 'Password must match.' : undefined } />
+                    color: celticB
+                }} secureTextEntry={true} value={confirmPass} onChangeText={setConfirmPass} errorMessage={ isNotSame ? 'Password must match.' : undefined } />
 
                 { (newPass && confirmPass).length > 0 ? <TouchableOpacity onPress={submitPass} activeOpacity={0.7} >
                     <View style={s.btn}>
-                        <Text style={{fontFamily: 'opsReg', color: "#3373C4"}}> Confirm </Text>
+                        <Text style={{fontFamily: 'opsReg', color: celticB}}> Confirm </Text>
                     </View>
                 </TouchableOpacity> : null }
-
-                {/* <TouchableOpacity activeOpacity={0.7} >
-                    <View style={s.btn2}>
-                        <Text style={{fontFamily: 'opsReg', color: 'red'}}> Cancel </Text>
-                    </View>
-                </TouchableOpacity> */}
 
             </View>
         </View>

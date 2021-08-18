@@ -16,6 +16,9 @@ import { loginUser, authUser } from "../../../redux/actions/actions"
 // Svg
 import LoginImg from '../../../assets/loginaccount.svg'
 
+// Constants
+import { celticB } from "../../../constants/Colors";
+
 // Types
 import { Istate } from '../../../types/index'
 interface Props {
@@ -49,17 +52,15 @@ const Login: FC<Props> = ({toggleMode}) => {
             }
         }).then(res => {
             
-            console.log(res.data)
+            setIsLoading(false)
 
             if (res.data.data.loginUser) {
                 dispatch(loginUser(res.data.data.loginUser))
                 dispatch(authUser())
-                setIsLoading(false)
                 return 
             }
 
             if (res.data.errors[0].message) {
-                setIsLoading(false)
                 ToastAndroid.showWithGravity(res.data.errors[0].message, ToastAndroid.SHORT, ToastAndroid.BOTTOM)
                 return 
             }
@@ -83,23 +84,23 @@ const Login: FC<Props> = ({toggleMode}) => {
             <View style={{marginHorizontal: 10, flex: 1.8}}>
 
                 <View style={s.titleRoot}>
-                    <Text style={s.title} > Login {`${isAuth}`} </Text>
+                    <Text style={s.title} > Login </Text>
                 </View>
 
                 <Input inputStyle={{
                     fontSize: 15
                 }} style={s.inputs} label="Email Address" autoCompleteType="email" labelStyle={{color: "black"}} leftIcon={
-                    { type: 'ionicon', color: "#3373C4", name: 'mail-outline', iconStyle: {justifyContent: 'center'} }
+                    { type: 'ionicon', color: celticB, name: 'mail-outline', iconStyle: {justifyContent: 'center'} }
                 } value={email} onChangeText={setEmail} />
                 <Input inputStyle={{
                     fontSize: 15
                 }} style={s.inputs} secureTextEntry={true} labelStyle={{color: "black"}} label="Password" leftIcon={
-                    { type: 'ionicon', color: "#3373C4", name: 'key-outline', iconStyle: {justifyContent: 'center'} }
+                    { type: 'ionicon', color: celticB, name: 'key-outline', iconStyle: {justifyContent: 'center'} }
                 } value={password} onChangeText={setPassword} />
 
                 <Button loading={isLoading} onPress={loginSubmit} buttonStyle={s.button} titleStyle={{ fontFamily: 'opsReg', color: "white" }} title="Sign In" />
 
-                <Text style={{marginHorizontal: 5, fontFamily: 'opsReg', color: "black"}} onPress={() => toggleMode('register')} > No account?<Text style={{fontFamily: 'opsBolder', color: "#3373C4"}}> Sign up here</Text>. </Text> 
+                <Text style={{marginHorizontal: 5, fontFamily: 'opsReg', color: "black"}} onPress={() => toggleMode('register')} > No account?<Text style={{fontFamily: 'opsBolder', color: celticB}}> Sign up here</Text>. </Text> 
 
             </View>
         </KeyboardAvoidingView>
@@ -126,11 +127,11 @@ const s = StyleSheet.create({
     title: {
         fontSize: 40,
         fontFamily: 'opsBold',
-        color: "#3373C4"
+        color: celticB
         // color: 'white'
     },
     button: {
-        backgroundColor: "#3373C4",
+        backgroundColor: celticB,
         marginHorizontal: 5,
         marginBottom: 15,
         height: 50,

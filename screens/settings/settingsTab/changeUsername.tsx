@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react'
-import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, useColorScheme } from 'react-native'
 import { useSelector, useDispatch } from 'react-redux'
 import { Ionicons } from '@expo/vector-icons'
 import { Input } from 'react-native-elements'
@@ -10,12 +10,16 @@ import { Istate } from '../../../types'
 // Redux
 import { changeUsername } from '../../../redux/actions/actions'
 
+// Constants
+import { celticB, lightMode, darkMode } from '../../../constants/Colors'
+
 export const ChangeUsernameScreen = () => {
 
     const dispatch = useDispatch()
     const username = useSelector((state: Istate) => state.names.username)
     const userID = useSelector((state: Istate) => state.user._id)
     const token = useSelector((state: Istate) => state.user.token)
+    const deviceTheme = useColorScheme()
     
     const [editMode, setEditMode] = useState(false)
     const [userInput, setUserInput] = useState(username)
@@ -28,7 +32,7 @@ export const ChangeUsernameScreen = () => {
     } 
 
     return (
-        <View style={s.root}>
+        <View style={{...s.root, backgroundColor: deviceTheme === 'light' ? lightMode : darkMode}}>
 
             { editMode ? <View style={s.formRoot}>
 
@@ -37,19 +41,20 @@ export const ChangeUsernameScreen = () => {
                     <Input label="Username" labelStyle={{
                         fontFamily: 'opsLight',
                         fontSize: 15,
-                        color: "#3373C4"
+                        color: celticB
                     }} inputStyle={{
-                        fontSize: 15
+                        fontSize: 15,
+                        color: deviceTheme === 'light' ? darkMode : lightMode
                     }} leftIcon={{
                         type: 'ionicons',
                         name: "person-outline",
-                        color: "#3373C4"
+                        color: celticB
                     }} value={userInput} onChangeText={setUserInput} />
                 </View>
                 
                 <TouchableOpacity onPress={submitForm} activeOpacity={0.7} >
                     <View style={s.btn}>
-                        <Text style={{fontFamily: 'opsReg', color: "#3373C4"}}> Confirm </Text>
+                        <Text style={{fontFamily: 'opsReg', color: celticB}}> Confirm </Text>
                     </View>
                 </TouchableOpacity>
 
@@ -62,8 +67,8 @@ export const ChangeUsernameScreen = () => {
             </View> : <TouchableOpacity onPress={() => setEditMode(prev => !prev)}>
 
                 <View style={s.usernameRoot}>
-                    <Text style={s.username}> @{username} </Text>
-                    <Ionicons name="pencil-sharp" size={20} color="#3373C4" />
+                    <Text style={{...s.username, color: deviceTheme === 'light' ? darkMode : lightMode}}> @{username} </Text>
+                    <Ionicons name="pencil-sharp" size={20} color={celticB} />
                 </View>
 
             </TouchableOpacity> }

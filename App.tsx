@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useFonts } from 'expo-font'
 import AppLoading from 'expo-app-loading';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/lib/integration/react';
 import { NavigationContainer } from '@react-navigation/native';
+import { AppearanceProvider } from 'react-native-appearance';
 
 // Main Navigator
 import { MainNavigator } from './navigation';
@@ -28,9 +29,11 @@ const App = () => {
   return (
     <Provider store={store} >
       <PersistGate persistor={persistor}>
-        <NavigationContainer>
-          <MainNavigator/>
-        </NavigationContainer>
+        <AppearanceProvider>
+          <NavigationContainer>
+            <MainNavigator/>
+          </NavigationContainer>
+        </AppearanceProvider>
       </PersistGate>
     </Provider>
   )

@@ -3,6 +3,9 @@ import { View, Text, TouchableHighlight, StyleSheet } from 'react-native'
 import { TextInput } from "react-native-paper";
 import { useDispatch, useSelector } from 'react-redux'
 
+// Constants
+import { celticB } from "../../../constants/Colors";
+
 // Redux
 import { createComment } from '../../../redux/actions/actions'
 
@@ -29,7 +32,7 @@ export const CreateCommentComponent: FC<Props> = (props) => {
             <Text style={{fontFamily: 'opsSemi', marginBottom: 20, fontSize: 20}} > Create a comment </Text>
             <TextInput value={userInput} onChangeText={setUserInput} multiline={true} placeholder="Write something." />
 
-            <TouchableHighlight disabled={!userInput} activeOpacity={0.2} underlayColor="#3373C4" onPress={() => {
+            <TouchableHighlight disabled={!userInput} activeOpacity={0.2} underlayColor={celticB} onPress={() => {
                 dispatch(createComment(postID, userInput, userID!, token!))
                 onClose(prev => !prev)
             }} style={s.btn}>
@@ -49,7 +52,7 @@ export const CreateCommentComponent: FC<Props> = (props) => {
 const s = StyleSheet.create({
     btn: {
         marginTop: 15,
-        backgroundColor: "#3373C4",
+        backgroundColor: celticB,
         height: 30,
         justifyContent: 'center',
         alignItems: 'center',

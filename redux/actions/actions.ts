@@ -12,11 +12,9 @@ import { PROD_URL } from "../../helpers/url"
 import { Istate, Iuser, thunkDis } from "../../types"
 
 // Action Types
-import { AUTH, CREATE_POST, DELETE_POST, LOAD_ALL_POSTS, LOAD_MY_FOLLOW, LOAD_MY_NAMES, LOAD_MY_POSTS, LOGIN_USER, LOGOUT_USER, UN_AUTH } from "../actionTypes/types"
+import { AUTH, CREATE_POST, DARK, DELETE_POST, LIGHT, LOAD_ALL_POSTS, LOAD_MY_FOLLOW, LOAD_MY_NAMES, LOAD_MY_POSTS, LOGIN_USER, LOGOUT_USER, UN_AUTH } from "../actionTypes/types"
 
 export const loginUser = (data: Iuser) => {
-
-    console.log(data)
 
     return {
         type: LOGIN_USER,
@@ -45,6 +43,22 @@ export const unAuthUser = () => {
 
     return {
         type: UN_AUTH
+    }
+
+}
+
+export const toggleLight = () => {
+    
+    return {
+        type: LIGHT
+    }
+
+}
+
+export const toggleDark = () => {
+    
+    return {
+        type: DARK
     }
 
 }

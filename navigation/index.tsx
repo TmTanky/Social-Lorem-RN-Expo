@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 
 // Navigators
 import { AuthNavigator } from "./stack/auth";
-import { BottomTabNavigator } from "./bottomTabStack/bottomTab";
+import { BottomTabStackNavigator, BottomTabNavigator } from "./bottomTabStack/bottomTab";
 
 // Types
 import { Istate } from "../types";

@@ -2,6 +2,9 @@ import React, { FC } from "react";
 import { View, KeyboardAvoidingView, StyleSheet, Text } from 'react-native'
 import { Input, Button } from 'react-native-elements'
 
+// Constants
+import { celticB } from "../../../constants/Colors";
+
 interface Props {
     toggleMode: Function
 }
@@ -18,23 +21,23 @@ const Register: FC<Props> = ({toggleMode}) => {
             <Input inputStyle={{
                 fontSize: 15
             }} labelStyle={{color: "black"}} style={s.inputs} label="First Name" leftIcon={
-                { type: 'ionicon', color: "#3373C4", name: 'person-outline'}
+                { type: 'ionicon', color: celticB, name: 'person-outline'}
             } />
             <Input inputStyle={{
                 fontSize: 15
             }} labelStyle={{color: "black"}} style={s.inputs} label="Last Name" leftIcon={
-                { type: 'ionicon', color: "#3373C4", name: 'person-outline'}
+                { type: 'ionicon', color: celticB, name: 'person-outline'}
             } />
             <Input inputStyle={{
                 fontSize: 15
             }} labelStyle={{color: "black"}} style={s.inputs} autoCompleteType="email" label="Email Address" leftIcon={
-                { type: 'ionicon', color: "#3373C4", name: 'mail-outline'}
+                { type: 'ionicon', color: celticB, name: 'mail-outline'}
             } />
             <Input inputStyle={{
-                color: "#3373C4",
+                color: celticB,
                 fontSize: 15
             }} labelStyle={{color: "black"}} style={s.inputs} secureTextEntry={true} label="Password" leftIcon={
-                { type: 'ionicon', color: "#3373C4", name: 'key-outline'}
+                { type: 'ionicon', color: celticB, name: 'key-outline'}
             } />
 
             <Button buttonStyle={s.button} titleStyle={{ fontFamily: 'opsReg' }} title="Sign Up" />
@@ -65,10 +68,10 @@ const s = StyleSheet.create({
     title: {
         fontSize: 40,
         fontFamily: 'opsBold',
-        color: "#3373C4"
+        color: celticB
     },
     button: {
-        backgroundColor: "#3373C4",
+        backgroundColor: celticB,
         marginHorizontal: 5,
         marginBottom: 15,
         height: 50,

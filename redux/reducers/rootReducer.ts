@@ -10,6 +10,7 @@ import { homeReducer } from "./homeReducer";
 import { namesReducer } from "./namesReducer";
 import { followReducer } from "./followReducer";
 import { myPostReducer } from "./postReducer";
+import { themeReducer } from "./themeReducer";
 
 export const rootReducer = combineReducers<Istate>({
     user: userReducer,
@@ -17,5 +18,6 @@ export const rootReducer = combineReducers<Istate>({
     homeFeed: homeReducer,
     names: namesReducer,
     follow: followReducer,
-    myPosts: myPostReducer
+    myPosts: myPostReducer,
+    theme: themeReducer
 })

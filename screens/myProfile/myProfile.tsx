@@ -1,5 +1,5 @@
 import React, { useEffect, useState, FC } from "react";
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, TouchableHighlight, ScrollView } from 'react-native'
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, TouchableHighlight, ScrollView, useColorScheme } from 'react-native'
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useSelector, useDispatch } from "react-redux";
 import { BottomSheet } from "react-native-elements";
@@ -25,6 +25,9 @@ import { CreatePostComponent } from "../../components/normal/home/createPost";
 import { CreateCommentComponent } from "../../components/normal/home/createComment";
 import { EditPostComponent } from "../../components/normal/home/editPost";
 
+// Constants
+import { celticB, darkMode, lightMode } from "../../constants/Colors";
+
 const MyProfileScreen: FC = (props) => {
 
     const dispatch = useDispatch()
@@ -36,6 +39,7 @@ const MyProfileScreen: FC = (props) => {
     const following = useSelector((state: Istate) => state.follow.following)
     const followers = useSelector((state: Istate) => state.follow.followers)
     const myPosts = useSelector((state: Istate) => state.myPosts)
+    const deviceTheme = useColorScheme()
     // console.log(myPosts.length)
     // const allPosts = useSelector((state: Istate) => state.homeFeed)
 
@@ -47,6 +51,7 @@ const MyProfileScreen: FC = (props) => {
     const [limitCount, setLimitCount] = useState(5)
     const [skipCount] = useState(0)
     const [toBeEdited, setToBeEdited] = useState("")
+    const [isLoading, setIsLoading] = useState(true)
     // const [myPosts, setMyPosts] = useState<Ipost[]>([])
 
     const handler = (mode: string, postID: string) => {
@@ -80,11 +85,11 @@ const MyProfileScreen: FC = (props) => {
 
         switch (mode) {
             case 'Edit':
-                return <Ionicons name="pencil-outline" size={22} />
+                return <Ionicons name="pencil-outline" color={deviceTheme === 'light' ? lightMode : darkMode} size={22} />
             case 'Remove':
-                return <Ionicons name="trash-outline" size={22} />
+                return <Ionicons name="trash-outline" color={deviceTheme === 'light' ? lightMode : darkMode} size={22} />
             case 'Cancel':
-                return <Ionicons name="close-outline" size={22} />
+                return <Ionicons name="close-outline" color={deviceTheme === 'light' ? lightMode : darkMode} size={22} />
             default:
                 return null
         }
@@ -103,6 +108,7 @@ const MyProfileScreen: FC = (props) => {
 
         pepe().then(puday => {
             puday === true && setRefreshing(false)
+            setIsLoading(false)
         }).then(err => {
             return 
         })
@@ -110,31 +116,31 @@ const MyProfileScreen: FC = (props) => {
     }, [limitCount])
 
     return (
-        <View style={s.root}>
+        <View style={{...s.root, backgroundColor: deviceTheme === 'light' ? lightMode : darkMode}}>
 
             <FlatList style={{
-                backgroundColor: 'white',
+                backgroundColor: deviceTheme === 'light' ? lightMode : darkMode,
                 flex: 1
             }} ListHeaderComponent={
                 <View style={{paddingVertical: 15}}>
 
-                    <View style={s.profileRoot}>
+                    <View style={{...s.profileRoot, backgroundColor: deviceTheme === 'light' ? lightMode : darkMode}}>
 
                         <View style={{paddingVertical: 10}}>
-                            <Text style={{fontFamily: 'opsBold', fontSize: 22}}> {`${fName} ${lName}`} </Text>
-                            <Text style={{fontFamily: 'opsLight'}}> @{username} </Text>
+                            <Text style={{fontFamily: 'opsBold', fontSize: 22, color: deviceTheme === 'light' ? darkMode : lightMode}}> {`${fName} ${lName}`} </Text>
+                            <Text style={{fontFamily: 'opsLight', color: deviceTheme === 'light' ? darkMode : lightMode}}> @{username} </Text>
                         </View>
 
                         <View>
-                            <Text style={{fontFamily: 'opsLight'}}> Following: {following?.length} </Text>
-                            <Text style={{fontFamily: 'opsLight'}}> Followers: {followers?.length} </Text>
+                            <Text style={{fontFamily: 'opsLight', color: deviceTheme === 'light' ? darkMode : lightMode}}> Following: {following?.length} </Text>
+                            <Text style={{fontFamily: 'opsLight', color: deviceTheme === 'light' ? darkMode : lightMode}}> Followers: {followers?.length} </Text>
                         </View>
 
                     </View>
 
                     <CreatePostComponent token={token} postBy={userID} />
 
-                    { myPosts.length === 0 ? <View style={{marginTop: 20, justifyContent: 'center', alignItems: 'center'}}>
+                    { myPosts.length === 0 && !isLoading ? <View style={{marginTop: 20, justifyContent: 'center', alignItems: 'center'}}>
                         <Text style={{fontFamily: 'opsSemi', color: 'gray'}}> No Posts Available </Text>
                     </View> : null }
 
@@ -156,12 +162,12 @@ const MyProfileScreen: FC = (props) => {
             }} isVisible={isOpen}>
                 { optionsBtns.map(item => {
                     return (
-                        <TouchableHighlight key={item.id} onPress={() => {
+                        <TouchableHighlight activeOpacity={0.8} underlayColor="white" key={item.id} onPress={() => {
                              handler(item.title, toBeDeleted)
-                        }} style={s.optionBtns}>
+                        }} style={{...s.optionBtns, backgroundColor: deviceTheme === 'light' ? darkMode : lightMode}}>
                             <View style={{flexDirection: 'row', alignItems: 'center'}}>
                                 { iconHandler(item.title) }
-                                <Text style={{fontFamily: 'opsReg', marginLeft: 8}}> {item.title} </Text>
+                                <Text style={{fontFamily: 'opsReg', marginLeft: 8, color: deviceTheme === 'light' ? lightMode : darkMode}}> {item.title} </Text>
                             </View>
                         </TouchableHighlight>
                     )
@@ -170,7 +176,7 @@ const MyProfileScreen: FC = (props) => {
 
             <Overlay animationType="fade" statusBarTranslucent={true} overlayStyle={{
                 width: '90%',
-                backgroundColor: 'white',
+                backgroundColor: deviceTheme === 'light' ? darkMode : lightMode,
                 paddingVertical: 20
             }} isVisible={showEditPost} >
                 <EditPostComponent selectedID={toBeEdited} myPosts={myPosts} onClose={setShowEditPost}/>
@@ -188,6 +194,7 @@ const MyProfile = createNativeStackNavigator()
 export const MyProfileStackNavigator = () => {
 
     const { Navigator, Screen } = MyProfile
+    const deviceTheme = useColorScheme()
 
     return (
         <Navigator screenOptions={options}>
@@ -198,14 +205,20 @@ export const MyProfileStackNavigator = () => {
                     headerRight: () => {
                         return <Ionicons onPress={() => {
                             props.navigation.navigate('Settings')
-                        }} name="person-circle-outline" size={30} />
+                        }} name="person-circle-outline" color={celticB} size={30} />
                     },
-                    headerShown: true
+                    headerShown: true,
+                    headerStyle: {
+                        backgroundColor: deviceTheme === 'light' ? lightMode : darkMode
+                    }
                 }
             }} component={MyProfileScreen} />
 
             <Screen name="Settings" options={{
-                animation: "slide_from_right"
+                animation: "slide_from_right",
+                headerStyle: {
+                    backgroundColor: deviceTheme === 'light' ? lightMode : darkMode
+                }
             }} component={SettingsNavigator} />
 
         </Navigator>
@@ -216,11 +229,11 @@ export const MyProfileStackNavigator = () => {
 const s = StyleSheet.create({
     root: {
         paddingBottom: 10,
-        backgroundColor: 'white',
+        // backgroundColor: 'white',
         flex: 1
     },
     profileRoot: {
-        backgroundColor: 'white',
+        // backgroundColor: 'white',
         padding: 10,
         marginHorizontal: 5,
         // marginTop: 10,
@@ -238,7 +251,7 @@ const options = {
     headerStyle: {
         backgroundColor: "white"
     },
-    headerTintColor: 'black',
+    headerTintColor: celticB,
     headerTitleStyle: {
         fontFamily: 'opsBold',
     },

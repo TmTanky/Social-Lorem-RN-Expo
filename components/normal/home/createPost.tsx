@@ -1,6 +1,9 @@
 import React, { useState, FC } from "react";
-import { View, Text, TextInput, StyleSheet, TouchableHighlight } from 'react-native'
+import { View, Text, TextInput, StyleSheet, TouchableHighlight, useColorScheme } from 'react-native'
 import { useDispatch } from "react-redux";
+
+// Constants
+import { celticB, lightMode, darkMode } from "../../../constants/Colors";
 
 // Redux
 import { createPost } from '../../../redux/actions/actions'
@@ -16,6 +19,7 @@ export const CreatePostComponent: FC<Props> = (props) => {
     const {token, postBy} = props
 
     const dispatch = useDispatch()
+    const deviceTheme = useColorScheme()
 
     const [userInput, setUserInput] = useState("")
 
@@ -27,9 +31,9 @@ export const CreatePostComponent: FC<Props> = (props) => {
     }
 
     return (
-        <View style={s.root}>
-            <Text style={{fontFamily: 'opsSemi', fontSize: 18, marginVertical: 5}}> Create Post </Text>
-            <TextInput style={s.input} value={userInput} onChangeText={setUserInput} placeholder="What's on your mind?" multiline={true} />
+        <View style={{...s.root, backgroundColor: deviceTheme === 'light' ? lightMode : darkMode}}>
+            <Text style={{fontFamily: 'opsSemi', fontSize: 18, marginVertical: 5, color: deviceTheme === 'light' ? darkMode : lightMode}}> Create Post </Text>
+            <TextInput placeholderTextColor={deviceTheme === 'light' ? 'gray' : lightMode} style={{...s.input, backgroundColor: deviceTheme === 'light' ? lightMode : darkMode, color: deviceTheme === 'light' ? darkMode : lightMode}} value={userInput} onChangeText={setUserInput} placeholder="What's on your mind?" multiline={true} />
 
             <View style={{alignItems: 'flex-end'}}>
                 <TouchableHighlight onPress={create} disabled={userInput.length === 0} activeOpacity={0.5} underlayColor="#459BB7" style={s.createBtn}>
@@ -58,7 +62,7 @@ const s = StyleSheet.create({
         fontFamily: 'opsLight'
     },
     createBtn: {
-        backgroundColor: "#3373C4",
+        backgroundColor: celticB,
         height: 28,
         justifyContent: 'center',
         alignItems: 'center',

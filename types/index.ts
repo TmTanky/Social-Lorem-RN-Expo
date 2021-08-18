@@ -40,7 +40,8 @@ export interface Istate {
         username: string
     }
     follow: Ifollow
-    myPosts: Ipost[]
+    myPosts: Ipost[],
+    theme: string
 }
 
 export interface Ifollow {
@@ -49,3 +50,4 @@ export interface Ifollow {
 }
 
 export type thunkDis = ThunkDispatch<Istate, null, AnyAction>
+type themeMode = 'LIGHT' | 'DARK'
