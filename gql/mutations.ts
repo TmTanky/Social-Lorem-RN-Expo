@@ -32,3 +32,26 @@ export const changeUsernameGql = `mutation changeUsername($userID: ID!, $newUser
 export const changePasswordGql = `mutation changePassword($userID: ID!, $newPass: String!) {
     changePassword(userID: $userID, newPass: $newPass)
 }`
+
+export const followUserGql = `mutation followUser($userID: ID!, $toFollowID: ID!) {
+    followUser(userID: $userID, toFollowID: $toFollowID)
+}`
+
+export const createUserGql = `mutation createUser($firstName: String!, $lastName: String!, $email: String!, $password: String!) {
+    createUser(firstName: $firstName, lastName: $lastName, email: $email, password: $password) {
+        _id
+        firstName
+        lastName
+        email
+        myPosts {
+            _id
+            content
+            postBy {
+                _id
+                firstName
+                lastName
+            }
+        }
+        token
+    }
+}`

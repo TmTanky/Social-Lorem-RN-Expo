@@ -272,6 +272,7 @@ export const reactToPost = (postID: string, userID: string, token: string) => {
 
         // console.log(data)
         dispatch(getUsersPosts(token, userID))
+        dispatch(loadAllPosts(token))
 
     }
 

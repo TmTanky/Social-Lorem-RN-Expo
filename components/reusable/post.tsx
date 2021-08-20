@@ -23,6 +23,7 @@ interface Props {
     content: string
     toggleOptions?: Dispatch<SetStateAction<boolean>>
     setDelete?: Dispatch<SetStateAction<string>>
+    refetch?: Function
 }
 
 // Components 
@@ -86,7 +87,7 @@ export const PostItem: FC<Props> = (props) => {
                 <View style={s.option}>
                     <Ionicons onPress={() => {
                         dispatch(reactToPost(id, userID!, token!))
-                    }} name={ likes.map(item => item._id === id).length === 1 ? "heart" : "heart-outline" } color={celticB} size={20} />
+                    }} name={ likes.filter(item => item._id === userID).length === 1 ? "heart" : "heart-outline" } color={celticB} size={20} />
                 </View>
 
                 <View style={s.option}>

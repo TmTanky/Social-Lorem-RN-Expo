@@ -29,7 +29,7 @@ export const BottomTabNavigator = () => {
             borderBottomLeftRadius: 15,
             borderBottomRightRadius: 15,
             height: 70,
-        }} initialRouteName="home"
+        }} sceneAnimationEnabled={true} initialRouteName="home"
             inactiveColor={deviceTheme === 'light' ? lightMode : darkMode}
             activeColor={celticB}
         >

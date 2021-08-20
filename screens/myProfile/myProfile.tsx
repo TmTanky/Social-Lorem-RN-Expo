@@ -1,10 +1,11 @@
 import React, { useEffect, useState, FC } from "react";
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, TouchableHighlight, ScrollView, useColorScheme } from 'react-native'
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, TouchableHighlight, ScrollView, useColorScheme, Dimensions } from 'react-native'
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useSelector, useDispatch } from "react-redux";
 import { BottomSheet } from "react-native-elements";
 import { Overlay } from "react-native-elements";
 import { Ionicons } from "@expo/vector-icons";
+import ContentLoader, { Rect, Circle, Path } from "react-content-loader/native"
 
 // Types
 import { Ipost, Istate } from "../../types";
@@ -27,6 +28,7 @@ import { EditPostComponent } from "../../components/normal/home/editPost";
 
 // Constants
 import { celticB, darkMode, lightMode } from "../../constants/Colors";
+
 
 const MyProfileScreen: FC = (props) => {
 
@@ -140,6 +142,29 @@ const MyProfileScreen: FC = (props) => {
 
                     <CreatePostComponent token={token} postBy={userID} />
 
+                    { isLoading ? [1,2,3].map((key) => {
+                        return (
+                            <View style={{justifyContent: 'center', alignItems: 'center'}} key={key}>
+                                <ContentLoader 
+                                    speed={1.5}
+                                    width={Dimensions.get('screen').width - 40}
+                                    height={150}
+                                    viewBox="0 0 400 160"
+                                    backgroundColor={deviceTheme === 'light' ? lightMode : celticB}
+                                    foregroundColor={deviceTheme === 'light' ? celticB : lightMode}
+                                    animate={true}
+                                    style={{justifyContent: 'center', alignItems: 'center'}}
+                                >
+                                    <Rect x="0" y="8" rx="3" ry="3" width="150" height="5" /> 
+                                    <Rect x="0" y="26" rx="3" ry="3" width="220" height="5" /> 
+                                    <Rect x="0" y="56" rx="3" ry="3" width="410" height="5" /> 
+                                    <Rect x="0" y="72" rx="3" ry="3" width="380" height="5" /> 
+                                    <Rect x="0" y="88" rx="3" ry="3" width="178" height="5" />
+                                </ContentLoader>
+                            </View>
+                        )
+                    }) : null }
+
                     { myPosts.length === 0 && !isLoading ? <View style={{marginTop: 20, justifyContent: 'center', alignItems: 'center'}}>
                         <Text style={{fontFamily: 'opsSemi', color: 'gray'}}> No Posts Available </Text>
                     </View> : null }
@@ -162,7 +187,7 @@ const MyProfileScreen: FC = (props) => {
             }} isVisible={isOpen}>
                 { optionsBtns.map(item => {
                     return (
-                        <TouchableHighlight activeOpacity={0.8} underlayColor="white" key={item.id} onPress={() => {
+                        <TouchableHighlight activeOpacity={0.1} underlayColor={deviceTheme === 'light' ? darkMode : lightMode} key={item.id} onPress={() => {
                              handler(item.title, toBeDeleted)
                         }} style={{...s.optionBtns, backgroundColor: deviceTheme === 'light' ? darkMode : lightMode}}>
                             <View style={{flexDirection: 'row', alignItems: 'center'}}>

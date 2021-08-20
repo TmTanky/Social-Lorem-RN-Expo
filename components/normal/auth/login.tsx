@@ -65,10 +65,6 @@ const Login: FC<Props> = ({toggleMode}) => {
                 return 
             }
 
-            // console.log('yawa')
-            // dispatch(loginUser(res.data.data.loginUser))
-            // dispatch(authUser())
-            // setIsLoading(false)
         }).catch(err => {
             setIsLoading(false)
         })
@@ -87,7 +83,7 @@ const Login: FC<Props> = ({toggleMode}) => {
                     <Text style={s.title} > Login </Text>
                 </View>
 
-                <Input inputStyle={{
+                <Input autoCapitalize="none" inputStyle={{
                     fontSize: 15
                 }} style={s.inputs} label="Email Address" autoCompleteType="email" labelStyle={{color: "black"}} leftIcon={
                     { type: 'ionicon', color: celticB, name: 'mail-outline', iconStyle: {justifyContent: 'center'} }

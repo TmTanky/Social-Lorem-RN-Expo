@@ -18,6 +18,7 @@ import { darkMode, lightMode } from "../../constants/Colors";
 
 const SearchScreen: FC = (props: any) => {
 
+    const userID = useSelector((state: Istate) => state.user._id)!
     const token = useSelector((state: Istate) => state.user.token)
     const deviceTheme = useColorScheme()
 
@@ -90,7 +91,10 @@ const SearchScreen: FC = (props: any) => {
                     return (
                         <TouchableHighlight onPress={() => {
                             console.log(item.username)
-                            props.navigation.navigate('ViewProfile', { id: item._id, username: item.username })
+                            { item._id === userID ? 
+                                props.navigation.navigate('MyProfile', { id: item._id, username: item.username }) :
+                                props.navigation.navigate('ViewProfile', { id: item._id, username: item.username })
+                            }
                         }} underlayColor="transparent" key={item._id}>
                             <View style={{paddingHorizontal: 10, paddingVertical: 8, backgroundColor: deviceTheme === 'light' ? lightMode : darkMode}} >
                                 <Text style={{fontFamily: 'opsSemi', fontSize: 18, color: deviceTheme === 'light' ? darkMode : lightMode}}> {item.firstName} {item.lastName} </Text>
