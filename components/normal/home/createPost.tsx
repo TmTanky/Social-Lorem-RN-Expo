@@ -1,5 +1,5 @@
 import React, { useState, FC } from "react";
-import { View, Text, TextInput, StyleSheet, TouchableHighlight, useColorScheme } from 'react-native'
+import { View, Text, TextInput, StyleSheet, TouchableHighlight, useColorScheme, ToastAndroid } from 'react-native'
 import { useDispatch } from "react-redux";
 
 // Constants
@@ -25,9 +25,21 @@ export const CreatePostComponent: FC<Props> = (props) => {
 
     const create = async () => {
 
-        dispatch(createPost(token!, postBy!, userInput))
-        setUserInput("")
+        const data = dispatch(createPost(token!, postBy!, userInput)) as unknown
+        // setUserInput("")
+        // return createResults
 
+        return data
+
+    }
+
+    const submitCreate = async () => {
+        create().then((res => {
+            res === 'Done' && ToastAndroid.showWithGravity('Post Created', ToastAndroid.SHORT, ToastAndroid.BOTTOM)
+            setUserInput("")
+        })).catch(err => {
+            err === 'Failed' && ToastAndroid.showWithGravity('Please try again', ToastAndroid.SHORT, ToastAndroid.BOTTOM)
+        })
     }
 
     return (
@@ -36,7 +48,7 @@ export const CreatePostComponent: FC<Props> = (props) => {
             <TextInput placeholderTextColor={deviceTheme === 'light' ? 'gray' : lightMode} style={{...s.input, backgroundColor: deviceTheme === 'light' ? lightMode : darkMode, color: deviceTheme === 'light' ? darkMode : lightMode}} value={userInput} onChangeText={setUserInput} placeholder="What's on your mind?" multiline={true} />
 
             <View style={{alignItems: 'flex-end'}}>
-                <TouchableHighlight onPress={create} disabled={userInput.length === 0} activeOpacity={0.5} underlayColor="#459BB7" style={s.createBtn}>
+                <TouchableHighlight onPress={submitCreate} disabled={userInput.length === 0} activeOpacity={0.5} underlayColor="#459BB7" style={s.createBtn}>
                     <Text style={{fontFamily: 'opsLight', color: 'white'}}> Create </Text>
                 </TouchableHighlight>
             </View>
@@ -52,9 +64,6 @@ const s = StyleSheet.create({
         marginVertical: 10,
         // borderRadius: 5,
         // elevation: 3,
-        backgroundColor: 'white',
-        borderBottomColor: 'black',
-        borderBottomWidth: 0.2
     },
     input: {
         // backgroundColor: 'whitesmoke',

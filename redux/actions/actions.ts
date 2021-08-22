@@ -171,21 +171,26 @@ export const deletePost = (token: string, postID: string, userID: string) => {
 
     return async (dispatch: thunkDis) => {
 
-        await axios.post(PROD_URL, {
-            query: deletePostGql,
-            variables: {
-                postID
-            }
-        }, {
-            headers: {
-                'authorization': `Bearer ${token}`
-            }
-        })
+        return new Promise((resolve, reject) => {
 
-        dispatch({
-            type: DELETE_POST
+            axios.post(PROD_URL, {
+                query: deletePostGql,
+                variables: {
+                    postID
+                }
+            }, {
+                headers: {
+                    'authorization': `Bearer ${token}`
+                }
+            }).then(data => {
+                dispatch({ type: DELETE_POST })
+                dispatch(getUsersPosts(token, userID))
+                return resolve('Successfully Deleted')
+            }).catch(err => {
+                return reject('Failed')
+            })
+
         })
-        dispatch(getUsersPosts(token, userID))
 
     }
 
@@ -210,9 +215,9 @@ export const createPost = (token: string, postBy: string, content: string) => {
             }).then(data => {
                 dispatch(getUsersPosts(token, postBy))
                 dispatch(loadAllPosts(token))
-                return 'Done'
+                return resolve('Done')
             }).catch(err => {
-                return 'Failed'
+                return reject('Failed')
             })
 
         })
@@ -305,19 +310,26 @@ export const editPost = (postID: string, content: string, token: string, userID:
     
     return async (dispatch: thunkDis) => {
 
-        await axios.post(PROD_URL, {
-            query: editPostGql,
-            variables: {
-                postID,
-                content
-            }
-        }, {
-            headers: {
-                'authorization': `Bearer ${token}`
-            }
-        })
+        return new Promise((resolve, reject) => {
 
-        dispatch(getUsersPosts(token, userID))
+            axios.post(PROD_URL, {
+                query: editPostGql,
+                variables: {
+                    postID,
+                    content
+                }
+            }, {
+                headers: {
+                    'authorization': `Bearer ${token}`
+                }
+            }).then(res => {
+                dispatch(getUsersPosts(token, userID))
+                return resolve('Done')
+            }).catch(err => {
+                return reject('Failed')
+            }) 
+
+        })
 
     }
 
@@ -327,19 +339,26 @@ export const changeUsername = (userID: string, username: string, token: string) 
 
     return async (dispatch: thunkDis) => {
 
-        await axios.post(PROD_URL, {
-            query: changeUsernameGql,
-            variables: {
-                userID,
-                newUsername: username
-            }
-        }, {
-            headers: {
-                'authorization': `Bearer ${token}`
-            }
-        })
+        return new Promise((resolve, reject) => {
 
-        dispatch(getUsername(token, userID))
+            axios.post(PROD_URL, {
+                query: changeUsernameGql,
+                variables: {
+                    userID,
+                    newUsername: username
+                }
+            }, {
+                headers: {
+                    'authorization': `Bearer ${token}`
+                }
+            }).then(res => {
+                dispatch(getUsername(token, userID))
+                return resolve('Username Changed Successfully')
+            }).catch(err => {
+                return reject('Failed')
+            })
+
+        })
 
     }
 

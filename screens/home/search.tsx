@@ -90,10 +90,9 @@ const SearchScreen: FC = (props: any) => {
                 { userList.map(item => {
                     return (
                         <TouchableHighlight onPress={() => {
-                            console.log(item.username)
                             { item._id === userID ? 
-                                props.navigation.navigate('MyProfile', { id: item._id, username: item.username }) :
-                                props.navigation.navigate('ViewProfile', { id: item._id, username: item.username })
+                                props.navigation.navigate('myprofiletab', { id: item._id, username: item.username }) :
+                                props.navigation.navigate('viewprofile', { id: item._id, username: item.username })
                             }
                         }} underlayColor="transparent" key={item._id}>
                             <View style={{paddingHorizontal: 10, paddingVertical: 8, backgroundColor: deviceTheme === 'light' ? lightMode : darkMode}} >

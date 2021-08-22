@@ -122,6 +122,7 @@ const ViewProfileScreen = () => {
                         id={item._id}
                         postBy={item.postBy}
                         likes={item.likes}
+                        refetch={getUsersPosts}
                     />
 
                 }} />

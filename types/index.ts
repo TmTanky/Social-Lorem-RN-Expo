@@ -24,10 +24,10 @@ export interface Ipost {
 }
 
 export interface Icomment {
-    _id: string
-    content: string
-    commentBy: Iuser
-    commentedOn: Ipost
+    _id?: string
+    content?: string
+    commentBy?: Iuser
+    commentedOn?: Ipost
 }
 
 export interface Istate {
@@ -47,6 +47,13 @@ export interface Istate {
 export interface Ifollow {
     followers?: Iuser[]
     following?: Iuser[]
+}
+
+export interface ILikes {
+    _id?: string
+    username?: string
+    firstName?: string
+    lastName?: string
 }
 
 export type thunkDis = ThunkDispatch<Istate, null, AnyAction>

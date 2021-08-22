@@ -165,3 +165,26 @@ export const viewUserPostsGql = `query viewUserPosts($username: String, $limitCo
         }
     }
 }`
+
+export const viewLikesGql = `query viewLikes($postID: ID) {
+    viewLikes(postID: $postID) {
+        likes {
+            _id
+            username
+            firstName
+            lastName
+        }
+    }
+}`
+
+export const viewCommentsGql = `query viewPostComments($postID: ID) {
+    viewPostComments(postID: $postID) {
+        _id
+        content
+        commentBy {
+            firstName
+            lastName
+            username
+        }
+    }
+}` 

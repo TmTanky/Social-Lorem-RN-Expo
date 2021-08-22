@@ -1,5 +1,5 @@
 import React, { FC, Dispatch, SetStateAction, useState } from "react";
-import { View, Text, TouchableHighlight, TextInput, StyleSheet, useColorScheme } from 'react-native'
+import { View, Text, TouchableHighlight, TextInput, StyleSheet, useColorScheme, ToastAndroid } from 'react-native'
 import { useDispatch, useSelector } from "react-redux";
 
 // Constants
@@ -28,13 +28,24 @@ export const EditPostComponent: FC<Props> = (props) => {
     
     const [userInput, setUserInput] = useState(selectedPost?.content)
 
+    const editHandler = async () => dispatch(editPost(selectedID, userInput!, token!, userID!)) as unknown
+
+    const handler = async () => {
+        editHandler().then((res: unknown) => {
+            res === 'Done' && ToastAndroid.showWithGravity('Successfully Edited', ToastAndroid.SHORT, ToastAndroid.BOTTOM)
+            return 
+        }).catch(err => {
+            return err === 'Failed' && ToastAndroid.showWithGravity('Please try again', ToastAndroid.SHORT, ToastAndroid.BOTTOM)
+        })
+    }
+
     return (
         <View style={{backgroundColor: deviceTheme === 'light' ? darkMode : lightMode}}>
             <Text style={{fontFamily: 'opsSemi', marginBottom: 20, fontSize: 20, color: deviceTheme === 'light' ? lightMode : darkMode}}> Edit Post </Text>
             <TextInput style={{color: deviceTheme === 'light' ? lightMode : darkMode}} value={userInput} placeholder="Write something." onChangeText={setUserInput} multiline={true} />
 
             <TouchableHighlight disabled={!userInput} activeOpacity={0.2} underlayColor={celticB} onPress={() => {
-                dispatch(editPost(selectedID, userInput!, token!, userID!))
+                handler()
                 onClose(prev => !prev)
             }} style={s.btn}>
                 <Text style={{fontFamily: 'opsSemi', color: 'white'}}> Confirm </Text>

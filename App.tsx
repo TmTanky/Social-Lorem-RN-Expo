@@ -8,6 +8,7 @@ import { AppearanceProvider } from 'react-native-appearance';
 
 // Main Navigator
 import { MainNavigator } from './navigation';
+import { MainNavigator2 } from './navigation2';
 
 // Store
 import { persistor, store } from './redux';
@@ -31,7 +32,7 @@ const App = () => {
       <PersistGate persistor={persistor}>
         <AppearanceProvider>
           <NavigationContainer>
-            <MainNavigator/>
+            <MainNavigator2/>
           </NavigationContainer>
         </AppearanceProvider>
       </PersistGate>

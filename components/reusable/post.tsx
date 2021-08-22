@@ -24,6 +24,7 @@ interface Props {
     toggleOptions?: Dispatch<SetStateAction<boolean>>
     setDelete?: Dispatch<SetStateAction<string>>
     refetch?: Function
+    otherProps?: any 
 }
 
 // Components 
@@ -31,7 +32,7 @@ import { CreateCommentComponent } from "../normal/home/createComment";
 
 export const PostItem: FC<Props> = (props) => {
 
-    const { id, comments, postBy, likes, content, toggleOptions, setDelete } = props
+    const { id, comments, postBy, likes, content, toggleOptions, setDelete, refetch, otherProps } = props
 
     const deviceTheme = useColorScheme()
     const nav = useNavigation()
@@ -75,11 +76,15 @@ export const PostItem: FC<Props> = (props) => {
 
             { (likes.length > 0 || comments.length > 0) && <View style={s.stats}>
                 <View style={s.likeStat}>
-                    <Text style={{fontFamily: 'opsLight', color: deviceTheme === 'light' ? darkMode : lightMode}}> Likes: {likes.length} </Text>
+                    <Text onPress={() => {
+                        otherProps.navigation.navigate('likesorcomments', { mode: 'Likes', id })
+                    }} style={{fontFamily: 'opsLight', color: deviceTheme === 'light' ? darkMode : lightMode}}> Likes: {likes.length} </Text>
                 </View>
 
                 <View style={s.commentStat}>
-                    <Text style={{fontFamily: 'opsLight', color: deviceTheme === 'light' ? darkMode : lightMode, alignItems: 'center'}}> Comments: {comments.length} </Text>
+                    <Text onPress={() => {
+                        otherProps.navigation.navigate('likesorcomments', { mode: 'Comments', id })
+                    }} style={{fontFamily: 'opsLight', color: deviceTheme === 'light' ? darkMode : lightMode, alignItems: 'center'}}> Comments: {comments.length} </Text>
                 </View>
             </View> }
 
@@ -87,6 +92,7 @@ export const PostItem: FC<Props> = (props) => {
                 <View style={s.option}>
                     <Ionicons onPress={() => {
                         dispatch(reactToPost(id, userID!, token!))
+                        { refetch ? refetch() : null } 
                     }} name={ likes.filter(item => item._id === userID).length === 1 ? "heart" : "heart-outline" } color={celticB} size={20} />
                 </View>
 

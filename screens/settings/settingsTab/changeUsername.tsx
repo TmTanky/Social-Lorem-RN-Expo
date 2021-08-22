@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react'
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, useColorScheme } from 'react-native'
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, useColorScheme, ToastAndroid } from 'react-native'
 import { useSelector, useDispatch } from 'react-redux'
 import { Ionicons } from '@expo/vector-icons'
 import { Input } from 'react-native-elements'
@@ -24,9 +24,16 @@ export const ChangeUsernameScreen = () => {
     const [editMode, setEditMode] = useState(false)
     const [userInput, setUserInput] = useState(username)
 
+    const usernameHandler = async () => dispatch(changeUsername(userID!, userInput, token!)) as unknown
+
     const submitForm = async () => {
 
-        dispatch(changeUsername(userID!, userInput, token!))
+        usernameHandler().then((res => {
+            res === 'Username Changed Successfully' && ToastAndroid.showWithGravity(res, ToastAndroid.SHORT, ToastAndroid.BOTTOM)
+            setUserInput("")
+        })).catch(err => {
+            err === 'Failed' && ToastAndroid.showWithGravity('Please try again', ToastAndroid.SHORT, ToastAndroid.BOTTOM)
+        })
         setEditMode(prev => !prev)
 
     } 

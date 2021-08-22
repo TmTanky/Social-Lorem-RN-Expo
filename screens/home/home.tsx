@@ -19,6 +19,7 @@ import { PostItem } from "../../components/reusable/post";
 // Screens
 import SearchScreen from "./search";
 import ViewProfileScreen from "../globalScreens/viewProfile";
+import LikesOrCommentsScreen from "../globalScreens/likesOrComments";
 
 // Constants
 import { celticB, darkMode, lightMode } from "../../constants/Colors";
@@ -81,7 +82,7 @@ const HomeScreen: FC = (props) => {
 
                     const {item: { _id, postBy, likes, comments, content }} = item
 
-                    return <PostItem id={_id} postBy={postBy} likes={likes} comments={comments} content={content} />
+                    return <PostItem otherProps={props} id={_id} postBy={postBy} likes={likes} comments={comments} content={content} />
 
                 }} />
 
@@ -134,6 +135,15 @@ export const HomeStackNavigator = () => {
                     headerTitle: `@${username}`
                 }
             }} component={ViewProfileScreen} />
+            <Screen name="LikesOrComments" options={(props) => {
+
+                const { mode } = props.route.params as { mode: string }
+
+                return {
+                    headerTitle: mode,
+                    animation: "simple_push"
+                }
+            }} component={LikesOrCommentsScreen} />
 
         </Navigator>
     )

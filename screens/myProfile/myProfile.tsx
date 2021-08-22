@@ -1,5 +1,5 @@
 import React, { useEffect, useState, FC } from "react";
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, TouchableHighlight, ScrollView, useColorScheme, Dimensions } from 'react-native'
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, TouchableHighlight, ScrollView, useColorScheme, Dimensions, ToastAndroid } from 'react-native'
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useSelector, useDispatch } from "react-redux";
 import { BottomSheet } from "react-native-elements";
@@ -66,11 +66,20 @@ const MyProfileScreen: FC = (props) => {
                 setIsOpen(prev => !prev)
                 return 
             case 'Remove':
-                dispatch(deletePost(token!, postID!, userID!))
-                dispatch(loadAllPosts(token!))
-                setToBeDeleted("")
-                setIsOpen(prev => !prev)
-                return 
+                const deleteHandler = async () => dispatch(deletePost(token!, postID!, userID!)) as unknown
+                const finalHandler = async () => {
+                    deleteHandler().then(res => {
+                        res === 'Successfully Deleted' && ToastAndroid.showWithGravity('Successfully Deleted', ToastAndroid.SHORT, ToastAndroid.BOTTOM)
+                        dispatch(loadAllPosts(token!))
+                        setToBeDeleted("")
+                        // setIsOpen(prev => !prev)
+                        return 
+                    }).catch(err => {
+                        return err === 'Failed' && ToastAndroid.showWithGravity('Please try again', ToastAndroid.SHORT, ToastAndroid.BOTTOM)
+                    })
+                }
+
+                finalHandler()
             case 'Cancel':
                 setToBeDeleted("")
                 setToBeEdited("")
@@ -174,7 +183,7 @@ const MyProfileScreen: FC = (props) => {
 
                 const {item: { _id, postBy, likes, comments, content }} = item
 
-                return <PostItem setDelete={setToBeDeleted} toggleOptions={setIsOpen} id={_id} postBy={postBy} likes={likes} comments={comments} content={content} />
+                return <PostItem otherProps={props} setDelete={setToBeDeleted} toggleOptions={setIsOpen} id={_id} postBy={postBy} likes={likes} comments={comments} content={content} />
 
             }} refreshing={refreshing} indicatorStyle="black" onRefresh={() => {
                 setLimitCount(5)

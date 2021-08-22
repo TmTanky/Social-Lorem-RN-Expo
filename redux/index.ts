@@ -9,7 +9,7 @@ import { rootReducer } from "./reducers/rootReducer";
 const persistConfig = {
     key: 'root',
     storage: AsyncStorage,
-    blacklist: ['homeFeed', 'myPosts']
+    blacklist: ['homeFeed', 'myPosts', 'names']
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)
