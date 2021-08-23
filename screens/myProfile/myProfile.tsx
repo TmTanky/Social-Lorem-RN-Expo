@@ -1,21 +1,20 @@
 import React, { useEffect, useState, FC } from "react";
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, TouchableHighlight, ScrollView, useColorScheme, Dimensions, ToastAndroid } from 'react-native'
+import { View, Text, FlatList, StyleSheet, TouchableHighlight, useColorScheme, Dimensions, ToastAndroid } from 'react-native'
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useSelector, useDispatch } from "react-redux";
 import { BottomSheet } from "react-native-elements";
 import { Overlay } from "react-native-elements";
 import { Ionicons } from "@expo/vector-icons";
-import ContentLoader, { Rect, Circle, Path } from "react-content-loader/native"
+import ContentLoader, { Rect } from "react-content-loader/native"
 
 // Types
-import { Ipost, Istate } from "../../types";
+import { Istate } from "../../types";
 
 // Redux
-import { getFollow, getUsername, getUsersPosts, deletePost, loadAllPosts, paginate } from "../../redux/actions/actions";
+import { getFollow, getUsername, deletePost, loadAllPosts, paginate } from "../../redux/actions/actions";
 
 // Helpers
 import { optionsBtns } from "../../helpers/bottomSheetOptions";
-import { PROD_URL } from "../../helpers/url";
 
 // Screens
 import { SettingsNavigator } from "../settings/settings";
@@ -23,7 +22,6 @@ import { SettingsNavigator } from "../settings/settings";
 // Components
 import { PostItem } from "../../components/reusable/post";
 import { CreatePostComponent } from "../../components/normal/home/createPost";
-import { CreateCommentComponent } from "../../components/normal/home/createComment";
 import { EditPostComponent } from "../../components/normal/home/editPost";
 
 // Constants
@@ -47,7 +45,6 @@ const MyProfileScreen: FC = (props) => {
 
     const [refreshing, setRefreshing] = useState(false)
     const [isOpen, setIsOpen] = useState(false)
-    const [showModal, setShowModal] = useState(false)
     const [showEditPost, setShowEditPost] = useState(false)
     const [toBeDeleted, setToBeDeleted] = useState("")
     const [limitCount, setLimitCount] = useState(5)
@@ -138,8 +135,12 @@ const MyProfileScreen: FC = (props) => {
                     <View style={{...s.profileRoot, backgroundColor: deviceTheme === 'light' ? lightMode : darkMode}}>
 
                         <View style={{paddingVertical: 10}}>
-                            <Text style={{fontFamily: 'opsBold', fontSize: 22, color: deviceTheme === 'light' ? darkMode : lightMode}}> {`${fName} ${lName}`} </Text>
-                            <Text style={{fontFamily: 'opsLight', color: deviceTheme === 'light' ? darkMode : lightMode}}> @{username} </Text>
+                            <Text style={{fontFamily: 'opsBold', fontSize: 22, color: deviceTheme === 'light' ? darkMode : lightMode}}>
+                                { isLoading ? 'Loading...' : !fName || !lName ? 'Loading...' : `${fName} ${lName}` }
+                            </Text>
+                            <Text style={{fontFamily: 'opsLight', color: deviceTheme === 'light' ? darkMode : lightMode}}>
+                                { isLoading ? 'Loading...' : `@${username}` }
+                            </Text>
                         </View>
 
                         <View>

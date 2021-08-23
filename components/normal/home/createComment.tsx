@@ -1,10 +1,11 @@
 import React, { FC, Dispatch, SetStateAction, useState } from "react";
-import { View, Text, TouchableHighlight, StyleSheet } from 'react-native'
+import { View, Text, TouchableHighlight, StyleSheet, useColorScheme } from 'react-native'
 import { TextInput } from "react-native-paper";
+import { useRoute } from "@react-navigation/core";
 import { useDispatch, useSelector } from 'react-redux'
 
 // Constants
-import { celticB } from "../../../constants/Colors";
+import { celticB, darkMode, lightMode } from "../../../constants/Colors";
 
 // Redux
 import { createComment } from '../../../redux/actions/actions'
@@ -14,35 +15,43 @@ import { Istate } from '../../../types/index'
 
 interface Props {
     onClose: Dispatch<SetStateAction<boolean>>
-    postID: string
+    postID: string,
+    refetch?: Function
+    refetchView?: Function
+    otherProps: any
 }
 
 export const CreateCommentComponent: FC<Props> = (props) => {
 
-    const { onClose, postID } = props
+    const { onClose, postID, refetchView } = props
 
+    const route = useRoute()
     const dispatch = useDispatch()
     const token = useSelector((state: Istate) => state.user.token)
     const userID = useSelector((state: Istate) => state.user._id)
+    const deviceTheme = useColorScheme()
 
     const [userInput, setUserInput] = useState("")
 
     return (
-        <View style={{backgroundColor: 'white'}}>
+        <View style={{backgroundColor: 'transparent'}}>
             <Text style={{fontFamily: 'opsSemi', marginBottom: 20, fontSize: 20}} > Create a comment </Text>
-            <TextInput value={userInput} onChangeText={setUserInput} multiline={true} placeholder="Write something." />
+            <TextInput value={userInput} style={{
+                backgroundColor: 'transparent'
+            }} onChangeText={setUserInput} multiline={true} placeholder="Write something." />
 
             <TouchableHighlight disabled={!userInput} activeOpacity={0.2} underlayColor={celticB} onPress={() => {
-                dispatch(createComment(postID, userInput, userID!, token!))
+                dispatch(createComment(postID, userInput, userID!, token!, route.name))
+                { route.name === 'viewprofile' ? refetchView!() : null }
                 onClose(prev => !prev)
             }} style={s.btn}>
-                <Text style={{fontFamily: 'opsSemi'}}> Comment </Text>
+                <Text style={{fontFamily: 'opsSemi', color: deviceTheme === 'light' ? darkMode : lightMode}}> Comment </Text>
             </TouchableHighlight>
             
             <TouchableHighlight activeOpacity={0.2} underlayColor="red" onPress={() => {
                 onClose(prev => !prev)
             }} style={s.btn2}>
-                <Text style={{fontFamily: 'opsSemi'}}> Cancel </Text>
+                <Text style={{fontFamily: 'opsSemi', color: deviceTheme === 'light' ? darkMode : lightMode}}> Cancel </Text>
             </TouchableHighlight>
         </View>
     )

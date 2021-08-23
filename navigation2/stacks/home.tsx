@@ -10,7 +10,6 @@ import { celticB, lightMode, darkMode } from "../../constants/Colors";
 // Screens
 import HomeScreen from "../../screens/home/home";
 import MyProfileScreen from "../../screens/myProfile/myProfile";
-import SearchScreen from "../../screens/home/search";
 
 const Home = createNativeStackNavigator()
 const MyProfile = createNativeStackNavigator()

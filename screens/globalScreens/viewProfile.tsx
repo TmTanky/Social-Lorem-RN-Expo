@@ -1,15 +1,15 @@
-import React, { useEffect, Suspense, lazy, useState } from "react";
+import React, { useEffect, Suspense, lazy, useState, FC } from "react";
 import { View, Text, FlatList, useColorScheme, Dimensions } from 'react-native'
 import axios from "axios";
-import { useRoute } from "@react-navigation/core";
+import { useRoute, useNavigation } from "@react-navigation/core";
 import { useSelector } from "react-redux";
-import ContentLoader, { Rect, Circle, Path } from "react-content-loader/native"
+import ContentLoader, { Rect } from "react-content-loader/native"
 
 // Types
 import { Ipost, Istate, Iuser } from "../../types";
 
 // Gql
-import { getUserByUsernameGql, viewUserGql, viewUserPostsGql } from "../../gql/queries";
+import { paginateGql, viewUserGql } from "../../gql/queries";
 
 // Helpers
 import { PROD_URL } from "../../helpers/url";
@@ -19,26 +19,32 @@ import { lightMode, darkMode, celticB } from "../../constants/Colors";
 
 // Components
 import { PostItem } from "../../components/reusable/post";
-const Tubol = lazy(() => import('../../components/viewUser/profile'))
+const ProfileInfo = lazy(() => import('../../components/viewUser/profile'))
 
-const ViewProfileScreen = () => {
+const ViewProfileScreen: FC = (props: any) => {
 
     const route = useRoute()
+    const nav = useNavigation()
     const token = useSelector((state: Istate) => state.user.token)!
     const deviceTheme = useColorScheme()
 
     const [viewedUser, setViewedUser] = useState<Iuser>()
     const [usersPosts, setUsersPosts] = useState<Ipost[]>()
+    const [refreshing, setRefreshing] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
+    const [limitCount, setLimitCount] = useState(5)
+    const [skipCount] = useState(0)
+    // const [isMounted, setIsMounted] = useState(true)
     
     const getUsername = async () => {
 
+        setRefreshing(true)
         const { username } = route.params as {username: string, id: string}
 
         const {data} = await axios.post<{data: { viewUser: Iuser } }>(PROD_URL, {
-            query: viewUserGql  ,
+            query: viewUserGql,
             variables: {
-                username 
+                username
             }
         }, { headers: {
             'authorization': `Bearer ${token}`
@@ -50,33 +56,46 @@ const ViewProfileScreen = () => {
     }
 
     const getUsersPosts = async () => {
+        // console.log('running')
+        const { id } = route.params as {username: string, id: string}
 
-        const { username } = route.params as {username: string, id: string}
-
-        const {data} = await axios.post<{data: { viewUserPosts: Ipost[] } }>(PROD_URL, {
-            query: viewUserPostsGql,
+        const {data} = await axios.post<{data: { paginate: Ipost[] } }>(PROD_URL, {
+            query: paginateGql,
             variables: {
-                username 
+                userID: id,
+                limitCount,
+                skipCount
             }
         }, { headers: {
             'authorization': `Bearer ${token}`
         }})
 
-        setUsersPosts(data.data.viewUserPosts)
+        setUsersPosts(data.data.paginate)
+        setRefreshing(false)
         setIsLoading(false)
 
     }
 
+    // useEffect(() => {
+    //     isMounted ? getUsername() : null
+
+    //     return () => setIsMounted(false)
+    // }, [limitCount])
+
     useEffect(() => {
-        getUsername()
-    }, [])
+        const subscribe = nav.addListener('focus', () => {
+            getUsername()
+        })
+
+        return subscribe
+    }, [props.navigation])
 
     return (
         <View style={{flex: 1, backgroundColor: deviceTheme === 'light' ? lightMode : darkMode}}>
             <Suspense fallback={<Text> Loading... </Text>}>
                 <FlatList ListHeaderComponent={
                     <View style={{marginVertical: 20}}>
-                        <Tubol
+                        <ProfileInfo
                             fName={viewedUser?.firstName!}
                             lName={viewedUser?.lastName!}
                             uName={viewedUser?.username!}
@@ -116,16 +135,22 @@ const ViewProfileScreen = () => {
 
                     const { item } = data
 
-                    return <PostItem 
+                    return <PostItem
+                        otherProps={props}
                         comments={item.comments}
                         content={item.content}
                         id={item._id}
                         postBy={item.postBy}
                         likes={item.likes}
                         refetch={getUsersPosts}
+                        refetchView={getUsersPosts}
                     />
 
-                }} />
+                }} refreshing={refreshing} indicatorStyle="black" onRefresh={() => {
+                    setLimitCount(5)
+                }} onEndReached={() => {
+                    setLimitCount(prev => prev+=5)
+                }} onEndReachedThreshold={0.1} />
             </Suspense>
         </View>
     )

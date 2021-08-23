@@ -1,16 +1,15 @@
 import React, { useEffect, useState, FC } from "react";
-import { View, Text, StyleSheet, FlatList, TextInput, useColorScheme, Dimensions } from 'react-native'
+import { View, Text, StyleSheet, FlatList, useColorScheme, Dimensions } from 'react-native'
 import { useDispatch, useSelector } from "react-redux";
 import { MaterialIcons } from '@expo/vector-icons';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { SearchBar } from "react-native-elements";
-import ContentLoader, { Rect, Circle, Path } from "react-content-loader/native"
+import ContentLoader, { Rect } from "react-content-loader/native"
 
 // Redux
 import { loadAllPosts } from "../../redux/actions/actions";
 
 // Types
-import { Iuser, Istate } from "../../types";
+import { Istate } from "../../types";
 
 // Components
 import { CreatePostComponent } from "../../components/normal/home/createPost";
@@ -33,11 +32,15 @@ const HomeScreen: FC = (props) => {
     const allPosts = useSelector((state: Istate) => state.homeFeed)
     const [isLoading, setIsLoading] = useState(true)
 
-    useEffect(() => {
+    const setUpHome = () => {
         dispatch(loadAllPosts(token!))
         setTimeout(() => {
             setIsLoading(false)
         }, 3000);
+    }
+
+    useEffect(() => {
+        setUpHome()
     }, [])
 
     return (
@@ -84,6 +87,8 @@ const HomeScreen: FC = (props) => {
 
                     return <PostItem otherProps={props} id={_id} postBy={postBy} likes={likes} comments={comments} content={content} />
 
+                }} refreshing={isLoading} indicatorStyle="black" onRefresh={() => {
+                    setUpHome()
                 }} />
 
             </View>
@@ -129,7 +134,7 @@ export const HomeStackNavigator = () => {
             <Screen name="Search" component={SearchScreen} />
             <Screen name="ViewProfile" options={(props) => {
 
-                const { id, username } = props.route.params as { id: string, username: string }
+                const { username } = props.route.params as { username: string }
 
                 return {
                     headerTitle: `@${username}`

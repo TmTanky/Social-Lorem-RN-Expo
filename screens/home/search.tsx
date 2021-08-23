@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef, FC } from "react";
+import React, { useState, useEffect, FC } from "react";
 import { View, Text, TextInput, ActivityIndicator, TouchableHighlight, useColorScheme } from 'react-native'
-import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 import { useSelector } from "react-redux";
 import axios from "axios";
 
@@ -24,7 +24,8 @@ const SearchScreen: FC = (props: any) => {
 
     const [userInput, setUserInput] = useState("")
     const [userList, setUserList] = useState<Iuser[]>([])
-    const [isSearching, setIsSearching] = useState<boolean | string>('idle')
+    const [isSearching, setIsSearching] = useState<boolean | string>(false)
+    const [isMounted, setIsMounted] = useState(true)
 
     const submitSearch = async () => {
 
@@ -46,17 +47,18 @@ const SearchScreen: FC = (props: any) => {
 
     useEffect(() => {
 
-        userInput.length > 0 && userInput !== 'idle' ? setIsSearching(true) : null
-        const setting = setUserList([])
-
-        const delaySearch = setTimeout(() => {
+        userInput.length > 0 ? setIsSearching(true) : null
+        isMounted && userInput.length > 0 ? setTimeout(() => {
             submitSearch()
-        }, 2000)
+        }, 2000) : null
+        // const delaySearch = setTimeout(() => {
+        //     submitSearch()
+        // }, 2000)
 
-        return () => {
-            clearTimeout(delaySearch)
-            setting
-        }
+        // return () => {
+        //     clearTimeout(delaySearch)
+        // }
+        return () => setIsMounted(false)
     }, [userInput])
 
     return (

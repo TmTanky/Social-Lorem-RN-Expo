@@ -82,7 +82,7 @@ export const BottomTabStackNavigator2 = () => {
             }} component={SearchScreen} />
             <Screen name="settings" options={{headerShown: false}} component={SettingsNavigator} />
             <Screen name="viewprofile" options={(props) => {
-                const { id, username } = props.route.params as { id: string, username: string }
+                const { username } = props.route.params as { username: string }
                 return { 
                     headerTitle: `@${username}`,
                     headerStyle: {

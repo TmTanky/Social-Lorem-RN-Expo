@@ -1,6 +1,6 @@
 import React, { useEffect, FC, useState } from "react";
-import { View, Text, FlatList, useColorScheme } from 'react-native'
-import { useRoute, useNavigation } from "@react-navigation/core";
+import { View, Text, FlatList, useColorScheme, ActivityIndicator } from 'react-native'
+import { useRoute } from "@react-navigation/core";
 import axios from "axios";
 import { useSelector } from "react-redux";
 
@@ -9,7 +9,7 @@ import { LikeClass } from "../../classes/like";
 import { CommentClass } from "../../classes/comment";
 
 // Types
-import { Icomment, Istate, Iuser, ILikes } from "../../types";
+import { Icomment, Istate, ILikes } from "../../types";
 
 // Helpers
 import { PROD_URL } from "../../helpers/url";
@@ -23,7 +23,6 @@ import { celticB, darkMode, lightMode } from "../../constants/Colors";
 const LikesOrCommentsScreen: FC = (props: any) => {
 
     const route = useRoute()
-    const nav = useNavigation()
     const { mode, id } = route.params as { mode: string, id: string }
 
     const token = useSelector((state: Istate) => state.user.token)
@@ -31,6 +30,7 @@ const LikesOrCommentsScreen: FC = (props: any) => {
 
     const [likesData, setLikesData] = useState<LikeClass[]>()
     const [commentsData, setCommentsData] = useState<CommentClass[]>()
+    const [isLoading, setIsLoading] = useState(true)
 
     const viewLikes = async () => {
         
@@ -48,6 +48,7 @@ const LikesOrCommentsScreen: FC = (props: any) => {
 
             const convertedData = allData.map(item => new LikeClass(item._id!, item.username!, item.firstName!, item.lastName!))
             setLikesData(convertedData)
+            setIsLoading(false)
             
         } catch (err) {
             console.log(err)
@@ -71,6 +72,7 @@ const LikesOrCommentsScreen: FC = (props: any) => {
 
             const convertedData = allData.map(item => new CommentClass(item._id!, item.content!, item.commentBy!))
             setCommentsData(convertedData)
+            setIsLoading(false)
             // setData(data.data.viewPostComments)
             
         } catch (err) {
@@ -87,7 +89,11 @@ const LikesOrCommentsScreen: FC = (props: any) => {
 
     return (
         <View style={{backgroundColor: deviceTheme === 'light' ? lightMode : darkMode, flex: 1, paddingTop: 20}}>
-            { mode === 'Likes' ? <FlatList data={likesData} keyExtractor={item => item._id!} renderItem={itemData => {
+            { mode === 'Likes' ? <FlatList ListHeaderComponent={
+                <View>
+                    { isLoading ? <ActivityIndicator color={celticB} size="large" /> : null }
+                </View>
+            } data={likesData} keyExtractor={item => item._id!} renderItem={itemData => {
 
                 const { item } = itemData 
 
@@ -99,20 +105,24 @@ const LikesOrCommentsScreen: FC = (props: any) => {
                     </View>
                 )
 
-            }} /> : <FlatList data={commentsData} keyExtractor={item => item._id!} renderItem={itemData => {
+            }} /> : <FlatList ListHeaderComponent={
+                        <View>
+                            { isLoading ? <ActivityIndicator color={celticB} size="large" /> : null }
+                        </View>
+                    } data={commentsData} keyExtractor={item => item._id!} renderItem={itemData => {
 
-                const { item } = itemData 
-    
-                return (
-                    <View style={{marginHorizontal: 20, marginTop: 10}}>
-                        <Text onPress={() => {
-                            props.navigation.navigate('viewprofile', { id: item._id, username: item.commentBy.username })
-                        }} style={{fontFamily: 'opsSemi', color: deviceTheme === 'light' ? darkMode : lightMode, marginBottom: 10, fontSize: 18}}> {item.fullName()} </Text>
-                        <Text style={{fontFamily: 'opsLight', color: deviceTheme === 'light' ? darkMode : lightMode}}> {item.content} </Text>
-                    </View>
-                )
-    
-            }} /> }
+                        const { item } = itemData 
+            
+                        return (
+                            <View style={{marginHorizontal: 20, marginTop: 10}}>
+                                <Text onPress={() => {
+                                    props.navigation.navigate('viewprofile', { id: item._id, username: item.commentBy.username })
+                                }} style={{fontFamily: 'opsSemi', color: deviceTheme === 'light' ? darkMode : lightMode, marginBottom: 10, fontSize: 18}}> {item.fullName()} </Text>
+                                <Text style={{fontFamily: 'opsLight', color: deviceTheme === 'light' ? darkMode : lightMode}}> {item.content} </Text>
+                            </View>
+                        )
+            
+                    }} /> }
         </View>
     )
 

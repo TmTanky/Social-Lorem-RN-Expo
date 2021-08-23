@@ -1,5 +1,4 @@
 import axios from "axios"
-import { useSelector } from "react-redux"
 import { changePasswordGql, changeUsernameGql, createCommentGql, createPostGql, deletePostGql, editPostGql, reactToPostGql } from "../../gql/mutations"
 
 // GQL
@@ -9,10 +8,16 @@ import { getAllPostsGql, getFollowGql, getUsernameGql, getUsersPostsGql, paginat
 import { PROD_URL } from "../../helpers/url"
 
 // Types
-import { Istate, Iuser, thunkDis } from "../../types"
+import { Iuser, thunkDis } from "../../types"
+// export type Stack = 'myprofilestack' | 'homestack' | 'viewprofile'
+enum Stack {
+    myprofilestack = 'myprofilestack',
+    homestack = 'homestack',
+    viewprofile = 'viewprofile',    
+}
 
 // Action Types
-import { AUTH, CREATE_POST, DARK, DELETE_POST, LIGHT, LOAD_ALL_POSTS, LOAD_MY_FOLLOW, LOAD_MY_NAMES, LOAD_MY_POSTS, LOGIN_USER, LOGOUT_USER, UN_AUTH } from "../actionTypes/types"
+import { AUTH, DARK, DELETE_POST, LIGHT, LOAD_ALL_POSTS, LOAD_MY_FOLLOW, LOAD_MY_NAMES, LOAD_MY_POSTS, LOGIN_USER, LOGOUT_USER, UN_AUTH } from "../actionTypes/types"
 
 export const loginUser = (data: Iuser) => {
 
@@ -263,7 +268,7 @@ export const reactToPost = (postID: string, userID: string, token: string) => {
 
     return async (dispatch: thunkDis) => {
 
-        const {data} = await axios.post(PROD_URL, {
+        await axios.post(PROD_URL, {
             query: reactToPostGql,
             variables: {
                 postID,
@@ -283,11 +288,11 @@ export const reactToPost = (postID: string, userID: string, token: string) => {
 
 }
 
-export const createComment = (postID: string, content: string, userID: string, token: string) => {
+export const createComment = (postID: string, content: string, userID: string, token: string, stack: string) => {
 
     return async (dispatch: thunkDis) => {
 
-        const {data} = await axios.post(PROD_URL, {
+        await axios.post(PROD_URL, {
             query: createCommentGql,
             variables: {
                 postID,
@@ -300,7 +305,8 @@ export const createComment = (postID: string, content: string, userID: string, t
             }
         })
 
-        dispatch(getUsersPosts(token, userID))
+        stack === Stack.viewprofile ? dispatch(getUsersPosts(token, userID)) : null
+        stack === Stack.homestack ? dispatch(loadAllPosts(token)) : null
 
     }
 
@@ -368,7 +374,7 @@ export const changePassword = (userID: string, newPass: string, token: string) =
 
     return async (dispatch: thunkDis) => {
 
-        const {data} = await axios.post(PROD_URL, {
+        await axios.post(PROD_URL, {
             query: changePasswordGql,
             variables: {
                 userID,
