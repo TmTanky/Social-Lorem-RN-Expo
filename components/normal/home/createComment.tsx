@@ -1,11 +1,11 @@
 import React, { FC, Dispatch, SetStateAction, useState } from "react";
-import { View, Text, TouchableHighlight, StyleSheet, useColorScheme } from 'react-native'
+import { View, Text, TouchableHighlight, StyleSheet } from 'react-native'
 import { TextInput } from "react-native-paper";
 import { useRoute } from "@react-navigation/core";
 import { useDispatch, useSelector } from 'react-redux'
 
 // Constants
-import { celticB, darkMode, lightMode } from "../../../constants/Colors";
+import { celticB, lightMode } from "../../../constants/Colors";
 
 // Redux
 import { createComment } from '../../../redux/actions/actions'
@@ -29,7 +29,6 @@ export const CreateCommentComponent: FC<Props> = (props) => {
     const dispatch = useDispatch()
     const token = useSelector((state: Istate) => state.user.token)
     const userID = useSelector((state: Istate) => state.user._id)
-    const deviceTheme = useColorScheme()
 
     const [userInput, setUserInput] = useState("")
 
@@ -42,16 +41,16 @@ export const CreateCommentComponent: FC<Props> = (props) => {
 
             <TouchableHighlight disabled={!userInput} activeOpacity={0.2} underlayColor={celticB} onPress={() => {
                 dispatch(createComment(postID, userInput, userID!, token!, route.name))
-                { route.name === 'viewprofile' ? refetchView!() : null }
+                route.name === 'viewprofile' && refetchView ? refetchView!() : null 
                 onClose(prev => !prev)
             }} style={s.btn}>
-                <Text style={{fontFamily: 'opsSemi', color: deviceTheme === 'light' ? darkMode : lightMode}}> Comment </Text>
+                <Text style={{fontFamily: 'opsSemi', color: lightMode}}> Comment </Text>
             </TouchableHighlight>
             
             <TouchableHighlight activeOpacity={0.2} underlayColor="red" onPress={() => {
                 onClose(prev => !prev)
             }} style={s.btn2}>
-                <Text style={{fontFamily: 'opsSemi', color: deviceTheme === 'light' ? darkMode : lightMode}}> Cancel </Text>
+                <Text style={{fontFamily: 'opsSemi', color: lightMode}}> Cancel </Text>
             </TouchableHighlight>
         </View>
     )
@@ -64,13 +63,13 @@ const s = StyleSheet.create({
         backgroundColor: celticB,
         height: 30,
         justifyContent: 'center',
-        alignItems: 'center',
+        alignItems: 'center'
     },
     btn2: {
         marginTop: 5,
         height: 30,
         backgroundColor: 'red',
         justifyContent: 'center',
-        alignItems: 'center',
+        alignItems: 'center'
     }
 })

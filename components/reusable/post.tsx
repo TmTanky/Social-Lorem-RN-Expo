@@ -1,7 +1,7 @@
-import React, { FC, useEffect, useState, SetStateAction, Dispatch } from "react";
+import React, { FC, useState, SetStateAction, Dispatch } from "react";
 import { Text, View, StyleSheet } from 'react-native'
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation, useRoute } from "@react-navigation/core";
+import { useRoute } from "@react-navigation/core";
 import { useSelector, useDispatch } from "react-redux";
 import { Overlay } from 'react-native-elements'
 import { useColorScheme } from "react-native-appearance";
@@ -33,47 +33,27 @@ import { CreateCommentComponent } from "../normal/home/createComment";
 
 export const PostItem: FC<Props> = (props) => {
 
-    const { id, comments, postBy, likes, content, toggleOptions, setDelete, refetch, otherProps, refetchView } = props
+    const { id, comments, postBy, likes, content, toggleOptions, setDelete, otherProps, refetchView } = props
 
     const deviceTheme = useColorScheme()
-    const nav = useNavigation()
     const route = useRoute()
     const dispatch = useDispatch()
-    const myPosts = useSelector((state: Istate) => state.myPosts)
     const token = useSelector((state: Istate) => state.user.token)
     const userID = useSelector((state: Istate) => state.user._id)
 
-    const [isHome, setIsHome] = useState<boolean>(true)
     const [showCreateComment, setShowCreateComment] = useState(false)
-
-    useEffect(() => {
-        const subcribe = nav.addListener('focus', () => {
-            route.name === "MyProfile" ? setIsHome(false) : setIsHome(true)
-        })
-        // const subcribe2 = nav.addListener('blur', () => {
-        //     route.name === "MyProfile" ? setIsHome(false) : setIsHome(true)
-        // })
-
-        return () => {
-            subcribe()
-            // subcribe2()
-        }
-    }, [route.name, myPosts.length])
 
     return (
         <View style={{...s.post, backgroundColor: deviceTheme === 'light' ? lightMode : darkMode}}>
 
             <View style={s.postBy}>
                 <Text onPress={() => {
-                    // otherProps.navigation.navigate('viewprofile', { id: postBy._id, username: postBy.username })
-                    { postBy._id === userID ? 
-                        otherProps.navigation.navigate('myprofiletab', { id: postBy._id, username: postBy.username }) :
-                        otherProps.navigation.navigate('viewprofile', { id: postBy._id, username: postBy.username })
-                    }
+                     postBy._id === userID ? otherProps.navigation.navigate('myprofiletab', { id: postBy._id, username: postBy.username }) : 
+                    otherProps.navigation.navigate('viewprofile', { id: postBy._id, username: postBy.username }) 
                 }} style={{fontFamily: 'opsSemi', fontSize: 18, color: deviceTheme === 'light' ? darkMode : lightMode}}>
                     {postBy.firstName} {postBy.lastName}
                 </Text>
-                { !isHome && <Ionicons onPress={() => {
+                { route.name === 'myprofilestack' && <Ionicons onPress={() => {
                     setDelete!(id)
                     toggleOptions!(prev => !prev)
                 }} name="ellipsis-horizontal-outline" color={deviceTheme === 'light' ? darkMode : lightMode} size={25} /> }
@@ -100,8 +80,8 @@ export const PostItem: FC<Props> = (props) => {
             <View style={s.options}>
                 <View style={s.option}>
                     <Ionicons onPress={() => {
-                        dispatch(reactToPost(id, userID!, token!))
-                        { refetch ? refetch() : null } 
+                        dispatch(reactToPost(id, userID!, token!, route.name))
+                        refetchView ? refetchView() : null 
                     }} name={ likes.filter(item => item._id === userID).length === 1 ? "heart" : "heart-outline" } color={celticB} size={20} />
                 </View>
 
@@ -115,7 +95,12 @@ export const PostItem: FC<Props> = (props) => {
                 backgroundColor: 'white',
                 paddingVertical: 20
             }} onRequestClose={() => setShowCreateComment(prev => !prev)} isVisible={showCreateComment} >
-                <CreateCommentComponent otherProps={otherProps} refetchView={refetchView} refetch={refetch!} postID={id} onClose={setShowCreateComment}/>
+                <CreateCommentComponent
+                    otherProps={otherProps}
+                    refetchView={refetchView}
+                    postID={id}
+                    onClose={setShowCreateComment}
+                />
             </Overlay>
 
         </View>
@@ -129,7 +114,7 @@ const s = StyleSheet.create({
         marginHorizontal: 10,
         padding: 10,
         borderRadius: 3,
-        elevation: 3
+        elevation: 1
     },
     postBy: {
         marginBottom: 5,

@@ -75,12 +75,16 @@ export const getUsersPostsGql = `query getUsersPosts($userID: ID) {
 export const getFollowGql = `query getFollow($userID: ID) {
     getFollow(userID: $userID) {
         following {
+            _id
             firstName
             lastName
+            username
         }
         followers {
+            _id
             firstName
             lastName
+            username
         }
     }
 }`
@@ -182,6 +186,7 @@ export const viewCommentsGql = `query viewPostComments($postID: ID) {
         _id
         content
         commentBy {
+            _id
             firstName
             lastName
             username

@@ -20,15 +20,15 @@ type Props = {
     uName: string
     following: Iuser[]
     followers: Iuser[]
-    isLoading: boolean
     personID: string
     getUsername: Function
     getUsersPosts: Function
+    otherProps: any
 }
 
 const Profile: FC<Props> = (props) => {
 
-    const { fName, lName, uName, followers, following, isLoading, personID, getUsername, getUsersPosts } = props
+    const { fName, lName, uName, followers, following, personID, getUsername, otherProps } = props
 
     const deviceTheme = useColorScheme()
     const token = useSelector((state: Istate) => state.user.token)!
@@ -36,7 +36,7 @@ const Profile: FC<Props> = (props) => {
 
     const followHandler = async (toFollowID: string) => {
 
-        const {data} = await axios.post(PROD_URL, {
+        await axios.post(PROD_URL, {
             query: followUserGql,
             variables: {
                 userID,
@@ -54,8 +54,7 @@ const Profile: FC<Props> = (props) => {
         <View style={{...s.root, backgroundColor: deviceTheme === 'light' ? lightMode : darkMode}}>
             <View style={s.info}>
                 <View style={s.names}>
-                    
-                    { isLoading ? <ContentLoader 
+                    { !fName || !lName || !uName ? <ContentLoader 
                         speed={1.5}
                         width={Dimensions.get('screen').width - 40}
                         height={150}
@@ -77,7 +76,7 @@ const Profile: FC<Props> = (props) => {
 
                 </View>
 
-                { isLoading ? null : <View style={s.status}>
+                { !followers || !following ? null : <View style={s.status}>
                     <TouchableHighlight onPress={() => {
                         followHandler(personID)
                     }} style={{...s.statusBtn,
@@ -92,12 +91,16 @@ const Profile: FC<Props> = (props) => {
                 
             </View>
 
-            { isLoading ? null : <View style={{marginTop: 10}}>
-                <Text style={{fontFamily: 'opsLight', color: deviceTheme === 'light' ? darkMode : lightMode}}>
-                    Following: {following.length}
+            { !following || !followers ? null : <View style={{marginTop: 10, flexDirection: 'row', justifyContent: 'space-evenly'}}>
+                <Text onPress={() => {
+                    otherProps.navigation.navigate('followingorfollowers', { mode: 'Following', userID: personID })
+                }} style={{fontFamily: 'opsLight', color: deviceTheme === 'light' ? darkMode : lightMode}}>
+                    Following: { !following || !followers ? 'Loading...' : following.length }
                 </Text>
-                <Text style={{fontFamily: 'opsLight', color: deviceTheme === 'light' ? darkMode : lightMode}}>
-                    Followers: {followers.length} 
+                <Text onPress={() => {
+                    otherProps.navigation.navigate('followingorfollowers', { mode: 'Followers', userID: personID })
+                }} style={{fontFamily: 'opsLight', color: deviceTheme === 'light' ? darkMode : lightMode}}>
+                    Followers: { !following || !followers ? 'Loading...' : followers.length }
                 </Text>
             </View> }
             

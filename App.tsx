@@ -1,13 +1,15 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useFonts } from 'expo-font'
 import AppLoading from 'expo-app-loading';
 import { Provider } from 'react-redux';
+import { BackHandler, Alert } from 'react-native';
 import { PersistGate } from 'redux-persist/lib/integration/react';
 import { NavigationContainer } from '@react-navigation/native';
 import { AppearanceProvider } from 'react-native-appearance';
+import NetInfo from '@react-native-community/netinfo';
 
 // Main Navigator
-import { MainNavigator } from './navigation';
+// import { MainNavigator } from './navigation';
 import { MainNavigator2 } from './navigation2';
 
 // Store
@@ -26,6 +28,17 @@ const App = () => {
   if (!loaded) {
     return <AppLoading/>
   }
+
+  NetInfo.fetch().then(state => {
+    if (!state.isConnected) {
+      return Alert.alert('Connection Required', 'You need internet connection to continue', [
+        {
+          text: 'OK',
+          onPress: () => BackHandler.exitApp()
+        }
+      ])
+    }
+  })
 
   return (
     <Provider store={store} >

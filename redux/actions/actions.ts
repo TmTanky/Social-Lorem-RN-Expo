@@ -264,7 +264,7 @@ export const paginate = (token: string, userID: string, limitCount: number, skip
 
 }
 
-export const reactToPost = (postID: string, userID: string, token: string) => {
+export const reactToPost = (postID: string, userID: string, token: string, stack: string) => {
 
     return async (dispatch: thunkDis) => {
 
@@ -280,9 +280,8 @@ export const reactToPost = (postID: string, userID: string, token: string) => {
             }
         })
 
-        // console.log(data)
-        dispatch(getUsersPosts(token, userID))
-        dispatch(loadAllPosts(token))
+        stack === Stack.homestack || Stack.myprofilestack ? dispatch(getUsersPosts(token, userID)) : null
+        stack === Stack.homestack || Stack.myprofilestack ? dispatch(loadAllPosts(token)) : null
 
     }
 
@@ -305,8 +304,9 @@ export const createComment = (postID: string, content: string, userID: string, t
             }
         })
 
-        stack === Stack.viewprofile ? dispatch(getUsersPosts(token, userID)) : null
-        stack === Stack.homestack ? dispatch(loadAllPosts(token)) : null
+        stack === Stack.homestack || Stack.myprofilestack ? dispatch(getUsersPosts(token, userID)) : null
+        stack === Stack.homestack || Stack.myprofilestack ? dispatch(loadAllPosts(token)) : null
+        
 
     }
 

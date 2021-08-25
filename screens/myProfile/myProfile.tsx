@@ -28,7 +28,7 @@ import { EditPostComponent } from "../../components/normal/home/editPost";
 import { celticB, darkMode, lightMode } from "../../constants/Colors";
 
 
-const MyProfileScreen: FC = (props) => {
+const MyProfileScreen: FC = (props: any) => {
 
     const dispatch = useDispatch()
     const token = useSelector((state: Istate) => state.user.token)
@@ -40,8 +40,6 @@ const MyProfileScreen: FC = (props) => {
     const followers = useSelector((state: Istate) => state.follow.followers)
     const myPosts = useSelector((state: Istate) => state.myPosts)
     const deviceTheme = useColorScheme()
-    // console.log(myPosts.length)
-    // const allPosts = useSelector((state: Istate) => state.homeFeed)
 
     const [refreshing, setRefreshing] = useState(false)
     const [isOpen, setIsOpen] = useState(false)
@@ -51,7 +49,7 @@ const MyProfileScreen: FC = (props) => {
     const [skipCount] = useState(0)
     const [toBeEdited, setToBeEdited] = useState("")
     const [isLoading, setIsLoading] = useState(true)
-    // const [myPosts, setMyPosts] = useState<Ipost[]>([])
+
 
     const handler = (mode: string, postID: string) => {
 
@@ -143,9 +141,13 @@ const MyProfileScreen: FC = (props) => {
                             </Text>
                         </View>
 
-                        <View>
-                            <Text style={{fontFamily: 'opsLight', color: deviceTheme === 'light' ? darkMode : lightMode}}> Following: {following?.length} </Text>
-                            <Text style={{fontFamily: 'opsLight', color: deviceTheme === 'light' ? darkMode : lightMode}}> Followers: {followers?.length} </Text>
+                        <View style={{flexDirection: 'row'}}>
+                            <Text onPress={() => {
+                                props.navigation.navigate('followingorfollowers', { mode: 'Following', userID })
+                            }} style={{fontFamily: 'opsLight', color: deviceTheme === 'light' ? darkMode : lightMode}}> Following: {following?.length} </Text>
+                            <Text onPress={() => {
+                                props.navigation.navigate('followingorfollowers', { mode: 'Followers', userID })
+                            }} style={{fontFamily: 'opsLight', color: deviceTheme === 'light' ? darkMode : lightMode}}> Followers: {followers?.length} </Text>
                         </View>
 
                     </View>
@@ -192,6 +194,7 @@ const MyProfileScreen: FC = (props) => {
                 setLimitCount(prev => prev+=5)
             }} onEndReachedThreshold={0.1} />
 
+            {/* Post Options */}
             <BottomSheet containerStyle={{
                 backgroundColor: 'transparent'
             }} isVisible={isOpen}>

@@ -6,10 +6,13 @@ import { Ionicons } from "@expo/vector-icons";
 
 // Stacks
 import { HomeStack2, MyProfile2 } from "../stacks/home";
-import SearchScreen from "../../screens/home/search";
-import ViewProfileScreen from "../../screens/globalScreens/viewProfile";
-import LikesOrCommentsScreen from "../../screens/globalScreens/likesOrComments";
 import { SettingsNavigator } from "../../screens/settings/settings";
+
+// Screens
+import FollowingOrFollowersScreen from "../../screens/globalScreens/followingOrFollowers";
+import SearchScreen from "../../screens/home/search";
+import LikesOrCommentsScreen from "../../screens/globalScreens/likesOrComments";
+import ViewProfileScreen from "../../screens/globalScreens/viewProfile";
 
 // Constants
 import { celticB, darkMode, lightMode } from "../../constants/Colors";
@@ -37,7 +40,7 @@ export const BottomTabNavigator2 = () => {
             activeColor={celticB}
         >
 
-            <Screen name="homebottomtab" options={{
+            <Screen name="hometab" options={{
                 tabBarLabel: 'Home',
                 tabBarIcon: (props) => {
                     return <View>
@@ -69,7 +72,7 @@ export const BottomTabStackNavigator2 = () => {
             animation: "slide_from_right",
         }} >
 
-            <Screen name="withtabs" options={{headerShown: false}} component={BottomTabNavigator2} />
+            <Screen name="homebottomtab" options={{headerShown: false}} component={BottomTabNavigator2} />
             <Screen name="search" options={(props) => {
                 return {
                     headerTitle: 'Search',
@@ -82,9 +85,8 @@ export const BottomTabStackNavigator2 = () => {
             }} component={SearchScreen} />
             <Screen name="settings" options={{headerShown: false}} component={SettingsNavigator} />
             <Screen name="viewprofile" options={(props) => {
-                const { username } = props.route.params as { username: string }
                 return { 
-                    headerTitle: `@${username}`,
+                    headerTitle: 'View Profile',
                     headerStyle: {
                         backgroundColor: deviceTheme === 'light' ? lightMode : darkMode
                     },
@@ -103,6 +105,17 @@ export const BottomTabStackNavigator2 = () => {
                     animation: 'slide_from_left'
                 }
             }} component={LikesOrCommentsScreen} />
+            <Screen name="followingorfollowers" options={(props) => {
+                const { mode } = props.route.params as { mode: string }
+                return { 
+                    headerTitle: mode,
+                    headerStyle: {
+                        backgroundColor: deviceTheme === 'light' ? lightMode : darkMode
+                    },
+                    headerTintColor: celticB,
+                    animation: 'slide_from_left'
+                }
+            }} component={FollowingOrFollowersScreen} />
 
         </Navigator>
     )
